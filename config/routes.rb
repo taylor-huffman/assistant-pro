@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  resources :reviews
+  resources :task_agreements
+  resources :assistant_tasks
+  resources :task_post_categories
+  resources :task_posts
+  resources :task_categories
+  resources :employers
+  resources :assistants
+  resources :accounts
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
