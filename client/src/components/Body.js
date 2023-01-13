@@ -1,11 +1,15 @@
 import React from 'react'
+import Account from './Account'
+import Home from './Home'
+import ProfileEmployer from './ProfileEmployer'
 
-function Account() {
-  return (
-    <div>
-      
-    </div>
-  )
+
+function Body() {
+
+    return (
+        <>
+            <ProfileEmployer/>
+        </>
+    )
 }
-
-export default Account
+export default Body
