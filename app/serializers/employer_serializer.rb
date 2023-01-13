@@ -1,5 +1,5 @@
 class EmployerSerializer < ActiveModel::Serializer
-  attributes :id, :company_name, :company_bio, :company_start_date
+  attributes :id, :company_name, :company_bio, :company_start_date, :assistant_list, :reviews
   
   # belongs_to :account
   has_many :task_posts
