@@ -3,6 +3,6 @@ class AccountSerializer < ActiveModel::Serializer
 
   has_one :employer
   has_one :assistant
-  # has_many :task_posts
+  # has_many :task_posts, through: :employer
   # has_many :task_agreements
 end

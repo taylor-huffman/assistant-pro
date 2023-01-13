@@ -8,8 +8,7 @@ class AccountsController < ApplicationController
 
     def show
         account = Account.find(params[:id])
-        render json: account
-        # , include: ['assistant', 'assistant.task_agreements', 'employer', 'employer.task_posts', 'employer.task_agreements', 'employer.assistants']
+        render json: account, include: ['assistant', 'assistant.task_agreements', 'employer', 'employer.task_posts', 'employer.task_agreements', 'employer.assistants']
     end
 
 end
