@@ -151,6 +151,8 @@ import PropTypes from 'prop-types';
                                                             <EditOutlinedIcon/>
                                                             <DeleteOutlineOutlinedIcon/>
                                                         </Grid>)
+                                                        } else {
+                                                            return null
                                                         }
                                                     }) : 'Loading' }
                                                 </Grid>
@@ -168,6 +170,8 @@ import PropTypes from 'prop-types';
                                                             <EditOutlinedIcon/>
                                                             <DeleteOutlineOutlinedIcon/>
                                                         </Grid>)
+                                                        } else {
+                                                            return null
                                                         }
                                                     }) : 'Loading' }
                                                 </Grid>
@@ -250,7 +254,9 @@ import PropTypes from 'prop-types';
                                                             <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
                                                             <TableCell align="left">{agreement.created_at}</TableCell>
                                                             <TableCell align="right">View Details</TableCell>
-                                                            </TableRow>)}
+                                                            </TableRow>)} else {
+                                                            return null
+                                                        }
                                                         }) :
                                                         <TableRow>
                                                             <TableCell>
@@ -289,7 +295,9 @@ import PropTypes from 'prop-types';
                                                             <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
                                                             <TableCell align="left">{agreement.created_at}</TableCell>
                                                             <TableCell align="right">View Details</TableCell>
-                                                            </TableRow>)}
+                                                            </TableRow>)} else {
+                                                            return null
+                                                        }
                                                         }) :
                                                         <TableRow>
                                                             <TableCell>
