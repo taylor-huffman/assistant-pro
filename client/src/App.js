@@ -3,6 +3,7 @@
 import Nav from "./components/Nav";
 import Body from './components/Body'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import Footer from "./components/Footer";
 
 const theme = createTheme({
   palette: {
@@ -132,6 +133,7 @@ function App() {
       <div className="App">
         <Nav/>
         <Body/>
+        <Footer/>
       </div>
     </ThemeProvider>
   );
