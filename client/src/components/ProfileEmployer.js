@@ -198,17 +198,24 @@ import { UserContext } from '../context/user';
                                     </Typography>
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                            {user.employer ? user.employer.assistant_list.map(assistant => {
+                                            {user.employer ? user.employer.assistants.map(assistant => {
                                                 return <Grid key={assistant.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%', alignItems: 'center' }}>
                                                     <Avatar sx={{ marginRight: '10px' }} aria-label="assistant">
                                                                 
                                                     </Avatar>
-                                                    <Typography variant='p' sx={{ marginRight: '10px' }}>
+                                                    <Typography variant='p'>
                                                         {assistant.company_name}
                                                     </Typography>
-                                                    <Button variant="outlined" color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
+                                                    {assistant.task_categories.map(category => {
+                                                        return (
+                                                            <Button variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginLeft: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
+                                                                {category.name}
+                                                            </Button>
+                                                        )
+                                                    })}
+                                                    {/* <Button variant="outlined" color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                                         Category
-                                                    </Button>
+                                                    </Button> */}
                                                     <EditOutlinedIcon sx={{ marginLeft: 'auto' }} />
                                                     <DeleteOutlineOutlinedIcon/>
                                                 </Grid>
