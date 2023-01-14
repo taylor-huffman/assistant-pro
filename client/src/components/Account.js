@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import { Typography, Box, Divider } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { UserContext } from '../context/user';
 
 function Account() {
   
-  const [account, setAccount] = useState([])
+  // const [account, setAccount] = useState([])
+  const { user, setUser } = useContext(UserContext)
 
-    useEffect(() => {
-        fetch('/accounts/1')
-        .then(r => r.json())
-        .then(account => {
-            setAccount(account)
-        })
-    }, [])
+    // useEffect(() => {
+    //     fetch('/accounts/1')
+    //     .then(r => r.json())
+    //     .then(account => {
+    //         setAccount(account)
+    //     })
+    // }, [])
 
-    console.log(account)
+    console.log(user)
 
     return (
         <>
@@ -24,7 +26,7 @@ function Account() {
                 <Box>
                     <Grid xs={12}>
                         <Typography variant='h1' sx={{ marginBottom: '1.5rem' }}>
-                            {`Hi, ${account.name}!`}
+                            {`Hi, ${user.name}!`}
                         </Typography>
                     </Grid>
                 </Box>
@@ -72,7 +74,7 @@ function Account() {
                                     </Typography>
                                     <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
                                         <Typography variant="p">
-                                            {account.address}
+                                            {user.address}
                                         </Typography>
                                         <EditOutlinedIcon/>
                                     </Grid>
@@ -83,7 +85,7 @@ function Account() {
                                     </Typography>
                                     <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
                                         <Typography variant="p">
-                                            {account.email}
+                                            {user.email}
                                         </Typography>
                                         <EditOutlinedIcon/>
                                     </Grid>
@@ -94,7 +96,7 @@ function Account() {
                                     </Typography>
                                     <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
                                         <Typography variant="p">
-                                            {account.phone}
+                                            {user.phone}
                                         </Typography>
                                         <EditOutlinedIcon/>
                                     </Grid>

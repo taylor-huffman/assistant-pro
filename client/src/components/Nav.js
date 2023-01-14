@@ -55,7 +55,7 @@
 
 
 
-import * as React from 'react';
+import React, { useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -74,6 +74,7 @@ import Input from '@mui/material/Input'
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AdbIcon from '@mui/icons-material/Adb';
+import { UserContext } from '../context/user';
 
 // import { useTheme } from '@mui/material/styles'
 
@@ -83,6 +84,7 @@ const ariaLabel = { 'aria-label': 'description' };
 
 const Nav = () => {
     // const theme = useTheme()
+    const { user, setUser } = useContext(UserContext)
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 

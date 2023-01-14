@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import PropTypes from 'prop-types';
+import { UserContext } from '../context/user';
   
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -42,8 +43,9 @@ import PropTypes from 'prop-types';
     
     function ProfileEmployer() {
     
-        const [account, setAccount] = useState({})
+        // const [account, setAccount] = useState({})
         // const [employer, setEmployer] = useState([])
+        const { user, setUser } = useContext(UserContext)
         const [taskPostValue, setTaskPostValue] = React.useState(0)
         const [agreementValue, setAgreementValue] = React.useState(0);
     
@@ -55,13 +57,13 @@ import PropTypes from 'prop-types';
             setTaskPostValue(newValue);
         };
     
-        useEffect(() => {
-            fetch('/accounts/1')
-            .then(r => r.json())
-            .then(account => {
-                setAccount(account)
-            })
-        }, [])
+        // useEffect(() => {
+        //     fetch('/accounts/1')
+        //     .then(r => r.json())
+        //     .then(account => {
+        //         setAccount(account)
+        //     })
+        // }, [])
     
         // useEffect(() => {
         //     fetch('/employers/1')
@@ -70,10 +72,7 @@ import PropTypes from 'prop-types';
         //         setEmployer(employer)
         //     })
         // }, [])
-    
-        // const employer = account.employer
-        // console.log(employer.task_posts)
-        console.log(account)
+        console.log(user)
     
         return (
             <>
@@ -81,7 +80,7 @@ import PropTypes from 'prop-types';
                     <Box>
                         <Grid xs={12}>
                             <Typography variant='h1' sx={{ marginBottom: '1.5rem' }}>
-                                {account.name ? `Hi, ${account.name}!` : 'Hi!'}
+                                {user.name ? `Hi, ${user.name}!` : 'Hi!'}
                             </Typography>
                         </Grid>
                     </Box>
@@ -142,7 +141,7 @@ import PropTypes from 'prop-types';
                                         <TabPanel value={taskPostValue} index={0}>
                                             <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                                 <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                                    {account.employer ? account.employer.task_posts.map(post => {
+                                                    {user.employer ? user.employer.task_posts.map(post => {
                                                         if (post.is_active === true) {
                                                             return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
                                                             <Typography variant='p' sx={{ marginRight: 'auto' }}>
@@ -161,7 +160,7 @@ import PropTypes from 'prop-types';
                                         <TabPanel value={taskPostValue} index={1}>
                                             <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                                 <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                                    {account.employer ? account.employer.task_posts.map(post => {
+                                                    {user.employer ? user.employer.task_posts.map(post => {
                                                         if (post.is_active === false) {
                                                             return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
                                                             <Typography variant='p' sx={{ marginRight: 'auto' }}>
@@ -183,7 +182,7 @@ import PropTypes from 'prop-types';
                                             Active
                                         </Typography>
                                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                            {account.employer ? account.employer.task_posts.map(post => {
+                                            {user.employer ? user.employer.task_posts.map(post => {
                                                 return <Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
                                                     <Typography variant='p' sx={{ marginRight: 'auto' }}>
                                                         {`${post.task_description.slice(0,50)}...`}
@@ -199,7 +198,7 @@ import PropTypes from 'prop-types';
                                     </Typography>
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                            {account.employer ? account.employer.assistant_list.map(assistant => {
+                                            {user.employer ? user.employer.assistant_list.map(assistant => {
                                                 return <Grid key={assistant.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%', alignItems: 'center' }}>
                                                     <Avatar sx={{ marginRight: '10px' }} aria-label="assistant">
                                                                 
@@ -240,7 +239,7 @@ import PropTypes from 'prop-types';
                                                     </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                    {account.employer ? account.employer.task_agreements.map((agreement) => {
+                                                    {user.employer ? user.employer.task_agreements.map((agreement) => {
                                                         if (agreement.is_completed === false) {
                                                         return (<TableRow
                                                             key={agreement.id}
@@ -281,7 +280,7 @@ import PropTypes from 'prop-types';
                                                     </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                    {account.employer ? account.employer.task_agreements.map((agreement) => {
+                                                    {user.employer ? user.employer.task_agreements.map((agreement) => {
                                                         if (agreement.is_completed === true) {
                                                         return (<TableRow
                                                             key={agreement.id}
@@ -327,7 +326,7 @@ import PropTypes from 'prop-types';
                                                     </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                    {account.employer ? account.employer.task_agreements.map((agreement) => (
+                                                    {user.employer ? user.employer.task_agreements.map((agreement) => (
                                                         <TableRow
                                                             key={agreement.id}
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -369,7 +368,7 @@ import PropTypes from 'prop-types';
                                                     </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                    {account.employer ? account.employer.reviews.map((review) => (
+                                                    {user.employer ? user.employer.reviews.map((review) => (
                                                         <TableRow
                                                             key={review.id}
                                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

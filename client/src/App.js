@@ -4,6 +4,7 @@ import Nav from "./components/Nav";
 import Body from './components/Body'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import Footer from "./components/Footer";
+import { UserProvider } from '../src/context/user';
 
 const theme = createTheme({
   palette: {
@@ -130,11 +131,13 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <Nav/>
-        <Body/>
-        <Footer/>
-      </div>
+      <UserProvider>
+        <div className="App">
+          <Nav/>
+          <Body/>
+          <Footer/>
+        </div>
+      </UserProvider>
     </ThemeProvider>
   );
 }
