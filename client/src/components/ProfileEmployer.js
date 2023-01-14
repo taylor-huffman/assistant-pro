@@ -134,8 +134,8 @@ import { UserContext } from '../context/user';
                                     <Box sx={{ width: '100%' }}>
                                         {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}> */}
                                             <Tabs value={taskPostValue} onChange={handleTaskPostChange} aria-label="basic tabs example">
-                                            <Tab label="Active" {...a11yProps(0)} />
-                                            <Tab label="Previous" {...a11yProps(1)} />
+                                            <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
+                                            <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
                                             </Tabs>
                                         {/* </Box> */}
                                         <TabPanel value={taskPostValue} index={0}>
@@ -220,9 +220,9 @@ import { UserContext } from '../context/user';
                                     </Typography>
                                     <Box sx={{ width: '100%' }}>
                                         {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}> */}
-                                            <Tabs value={agreementValue} onChange={handleAgreementChange} aria-label="basic tabs example">
-                                            <Tab label="Active" {...a11yProps(0)} />
-                                            <Tab label="Previous" {...a11yProps(1)} />
+                                            <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
+                                            <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
+                                            <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
                                             </Tabs>
                                         {/* </Box> */}
                                         <TabPanel value={agreementValue} index={0}>
