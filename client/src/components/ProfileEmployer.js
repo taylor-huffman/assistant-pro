@@ -144,7 +144,7 @@ import { UserContext } from '../context/user';
                                                     {user.employer ? user.employer.task_posts.map(post => {
                                                         if (post.is_active === true) {
                                                             return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
-                                                            <Typography variant='p' sx={{ marginRight: 'auto' }}>
+                                                            <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
                                                                 {`${post.task_description.slice(0,50)}...`}
                                                             </Typography>
                                                             <EditOutlinedIcon/>
@@ -163,7 +163,7 @@ import { UserContext } from '../context/user';
                                                     {user.employer ? user.employer.task_posts.map(post => {
                                                         if (post.is_active === false) {
                                                             return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
-                                                            <Typography variant='p' sx={{ marginRight: 'auto' }}>
+                                                            <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
                                                                 {`${post.task_description.slice(0,50)}...`}
                                                             </Typography>
                                                             <EditOutlinedIcon/>
@@ -203,12 +203,12 @@ import { UserContext } from '../context/user';
                                                     <Avatar sx={{ marginRight: '10px' }} aria-label="assistant">
                                                                 
                                                     </Avatar>
-                                                    <Typography variant='p'>
+                                                    <Typography variant='p' component="p" sx={{ fontFamily: 'Poppins' }}>
                                                         {assistant.company_name}
                                                     </Typography>
                                                     {assistant.task_categories.map(category => {
                                                         return (
-                                                            <Button variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginLeft: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
+                                                            <Button key={category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginLeft: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
                                                                 {category.name}
                                                             </Button>
                                                         )
