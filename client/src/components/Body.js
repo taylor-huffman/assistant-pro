@@ -2,6 +2,7 @@ import React from 'react'
 import Account from './Account'
 import Home from './Home'
 import ProfileEmployer from './ProfileEmployer'
+import Login from './Login'
 import { Route, Switch } from 'react-router-dom'
 
 
@@ -10,6 +11,9 @@ function Body() {
     return (
         <>
             <Switch>
+                <Route exact path="/login">
+                    <Login/>
+                </Route>
                 <Route exact path="/account">
                     <Account/>
                 </Route>
