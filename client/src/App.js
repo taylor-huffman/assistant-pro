@@ -132,7 +132,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <UserProvider>
-        <div className="App">
+        <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Nav/>
           <Body/>
           <Footer/>
