@@ -65,7 +65,7 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
@@ -73,12 +73,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Input from '@mui/material/Input'
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import AdbIcon from '@mui/icons-material/Adb';
+// import AdbIcon from '@mui/icons-material/Adb';
 import { UserContext } from '../context/user';
 
 // import { useTheme } from '@mui/material/styles'
 
-const pages = ['Categories', 'Log In'];
+const pages = ['Categories', 'Login'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const ariaLabel = { 'aria-label': 'description' };
 
@@ -142,7 +142,7 @@ const Nav = () => {
                     display: { xs: 'none', md: 'flex' }
                 }}>
                     <Input
-                    id="input-with-icon-adornment"
+                    id="input-with-icon-adornment-desktop"
                     startAdornment={
                         <InputAdornment position="start">
                             <SearchIcon />
@@ -265,7 +265,7 @@ const Nav = () => {
                     display: { xs: 'flex', md: 'none' }
                 }}>
                     <Input
-                    id="input-with-icon-adornment"
+                    id="input-with-icon-adornment-mobile"
                     startAdornment={
                         <InputAdornment position="start">
                             <SearchIcon />
