@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab } from '@mui/material'
+import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import PropTypes from 'prop-types';
@@ -72,7 +72,7 @@ import { UserContext } from '../context/user';
         //         setEmployer(employer)
         //     })
         // }, [])
-        console.log(user)
+        // console.log(user)
     
         return (
             <>
@@ -87,25 +87,42 @@ import { UserContext } from '../context/user';
                     <Box sx={{ marginTop: '3.5rem' }}>
                         <Grid container spacing={3}>
                             <Grid item xs={2}>
-                                <Typography sx={{ marginBottom: '1.5rem', fontWeight: '900' }}>
-                                    Employer Profile
-                                </Typography>
-                                <Box sx={{ borderRight: '1px solid rgba(0, 0, 0, 0.12)' }}>
-                                    <Typography>
-                                        Home
+                                <Box sx={{ position: 'sticky', top: '30px' }}>
+                                    <Typography sx={{ marginBottom: '1.5rem', fontWeight: '900' }}>
+                                        Employer Profile
                                     </Typography>
-                                    <Typography>
-                                        Job Posts
-                                    </Typography>
-                                    <Typography>
-                                        Assistants
-                                    </Typography>
-                                    <Typography>
-                                        Agreements
-                                    </Typography>
-                                    <Typography>
-                                        Reviews
-                                    </Typography>
+                                    <Box sx={{ borderRight: '1px solid rgba(0, 0, 0, 0.12)' }}>
+                                        <Link href="#" underline='hover'>
+                                            <Typography>
+                                                Home
+                                            </Typography>
+                                        </Link>
+                                        <Link href="#job-posts" underline='hover'>
+                                            <Typography>
+                                                Job Posts
+                                            </Typography>
+                                        </Link>
+                                        <Link href="#assistants" underline='hover'>
+                                            <Typography>
+                                                Assistants
+                                            </Typography>
+                                        </Link>
+                                        <Link href="#agreements" underline='hover'>
+                                            <Typography>
+                                                Agreements
+                                            </Typography>
+                                        </Link>
+                                        <Link href="#reviews" underline='hover'>
+                                            <Typography>
+                                                Reviews
+                                            </Typography>
+                                        </Link>
+                                        <Link href="#info" underline='hover'>
+                                            <Typography>
+                                                Info
+                                            </Typography>
+                                        </Link>
+                                    </Box>
                                 </Box>
                             </Grid>
                             <Grid item xs={10} sx={{ padding: '0.4rem 2.5rem',  }}>
@@ -127,56 +144,63 @@ import { UserContext } from '../context/user';
                                     </Grid>
                                 </Box>
                                 <Divider variant="middle" />
-                                <Grid item xs={12} sx={{ padding: '30px 0' }}>
-                                    <Typography variant='h2'>
+                                <Grid item xs={12}>
+                                    <Typography variant='h2' id="job-posts" sx={{ padding: '40px 0 0' }}>
                                         Job Posts
                                     </Typography>
-                                    <Box sx={{ width: '100%' }}>
-                                        {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}> */}
+                                    {user.employer ? 
+                                        <Box sx={{ width: '100%' }}>
                                             <Tabs value={taskPostValue} onChange={handleTaskPostChange} aria-label="basic tabs example">
-                                            <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
-                                            <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
+                                                <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
+                                                <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
                                             </Tabs>
-                                        {/* </Box> */}
-                                        <TabPanel value={taskPostValue} index={0}>
-                                            <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
-                                                <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                                    {user.employer ? user.employer.task_posts.map(post => {
-                                                        if (post.is_active === true) {
-                                                            return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
-                                                            <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
-                                                                {`${post.task_description.slice(0,50)}...`}
-                                                            </Typography>
-                                                            <EditOutlinedIcon/>
-                                                            <DeleteOutlineOutlinedIcon/>
-                                                        </Grid>)
-                                                        } else {
-                                                            return null
-                                                        }
-                                                    }) : 'Loading' }
-                                                </Grid>
-                                            </Box>
-                                        </TabPanel>
-                                        <TabPanel value={taskPostValue} index={1}>
-                                            <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
-                                                <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                                    {user.employer ? user.employer.task_posts.map(post => {
-                                                        if (post.is_active === false) {
-                                                            return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
-                                                            <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
-                                                                {`${post.task_description.slice(0,50)}...`}
-                                                            </Typography>
-                                                            <EditOutlinedIcon/>
-                                                            <DeleteOutlineOutlinedIcon/>
-                                                        </Grid>)
-                                                        } else {
-                                                            return null
-                                                        }
-                                                    }) : 'Loading' }
-                                                </Grid>
-                                            </Box>
-                                        </TabPanel>
-                                    </Box>
+                                            <TabPanel value={taskPostValue} index={0}>
+                                                <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
+                                                    <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                                        {user.employer.task_posts.filter(post => post.is_active === true).length > 0 ? user.employer.task_posts.filter(post => post.is_active === true).map(post => {
+                                                                return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    {`${post.task_description.slice(0,50)}...`}
+                                                                </Typography>
+                                                                <EditOutlinedIcon/>
+                                                                <DeleteOutlineOutlinedIcon/>
+                                                            </Grid>)
+                                                        }) : <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    No Active Job Posts
+                                                                </Typography>
+                                                            </Grid> }
+                                                    </Grid>
+                                                </Box>
+                                            </TabPanel>
+                                            <TabPanel value={taskPostValue} index={1}>
+                                                <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
+                                                    <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                                        {user.employer ? user.employer.task_posts.map(post => {
+                                                            if (post.is_active === false) {
+                                                                return (<Grid key={post.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    {`${post.task_description.slice(0,50)}...`}
+                                                                </Typography>
+                                                                <EditOutlinedIcon/>
+                                                                <DeleteOutlineOutlinedIcon/>
+                                                            </Grid>)
+                                                            } else {
+                                                                return null
+                                                            }
+                                                        }) : <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    No Previous Job Posts
+                                                                </Typography>
+                                                            </Grid> }
+                                                    </Grid>
+                                                </Box>
+                                            </TabPanel>
+                                        </Box>
+                                        :   <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                No Jobs Have Been Posted Yet
+                                            </Typography>  
+                                    }
                                     {/* <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                         <Typography variant="p" sx={{ fontWeight: '900' }}>
                                             Active
@@ -193,7 +217,7 @@ import { UserContext } from '../context/user';
                                             }) : 'Loading' }
                                         </Grid>
                                     </Box> */}
-                                    <Typography variant='h2' sx={{ paddingTop: '50px' }}>
+                                    <Typography variant='h2' sx={{ paddingTop: '50px' }} id="assistants">
                                         Assistants
                                     </Typography>
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
@@ -222,99 +246,99 @@ import { UserContext } from '../context/user';
                                             }) : 'Loading' }
                                         </Grid>
                                     </Box>
-                                    <Typography variant='h2' sx={{ paddingTop: '50px' }}>
+                                    <Typography variant='h2' sx={{ paddingTop: '50px' }} id="agreements">
                                         Agreements
                                     </Typography>
+                                    {user.employer ?
                                     <Box sx={{ width: '100%' }}>
-                                        {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}> */}
-                                            <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
-                                            <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
-                                            <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
-                                            </Tabs>
-                                        {/* </Box> */}
-                                        <TabPanel value={agreementValue} index={0}>
-                                             <TableContainer>
-                                                <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
-                                                    <TableHead>
-                                                    <TableRow>
-                                                        <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
-                                                        <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
-                                                        <TableCell sx={{ width: '25%' }} align="left">Assistant</TableCell>
-                                                        <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
-                                                        <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
-                                                        <TableCell sx={{ width: '17%' }} align="right">More</TableCell>
-                                                    </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                    {user.employer ? user.employer.task_agreements.map((agreement) => {
-                                                        if (agreement.is_completed === false) {
-                                                        return (<TableRow
-                                                            key={agreement.id}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                            >
-                                                            <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
-                                                                {`${agreement.task_post.task_description.slice(0,20)}...`}
-                                                            </TableCell>
-                                                            <TableCell align="left">Hello</TableCell>
-                                                            <TableCell align="left">{agreement.assistant.company_name}</TableCell>
-                                                            <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
-                                                            <TableCell align="left">{agreement.created_at}</TableCell>
-                                                            <TableCell align="right">View Details</TableCell>
-                                                            </TableRow>)} else {
-                                                            return null
-                                                        }
-                                                        }) :
-                                                        <TableRow>
-                                                            <TableCell>
-                                                                'Loading'
-                                                            </TableCell>
-                                                        </TableRow>}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </TabPanel>
-                                        <TabPanel value={agreementValue} index={1}>
-                                        <TableContainer>
-                                                <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
-                                                    <TableHead>
-                                                    <TableRow>
-                                                        <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
-                                                        <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
-                                                        <TableCell sx={{ width: '25%' }} align="left">Assistant</TableCell>
-                                                        <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
-                                                        <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
-                                                        <TableCell sx={{ width: '17%' }} align="right">More</TableCell>
-                                                    </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                    {user.employer ? user.employer.task_agreements.map((agreement) => {
-                                                        if (agreement.is_completed === true) {
-                                                        return (<TableRow
-                                                            key={agreement.id}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                            >
-                                                            <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
-                                                                {`${agreement.task_post.task_description.slice(0,20)}...`}
-                                                            </TableCell>
-                                                            <TableCell align="left">Hello</TableCell>
-                                                            <TableCell align="left">{agreement.assistant.company_name}</TableCell>
-                                                            <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
-                                                            <TableCell align="left">{agreement.created_at}</TableCell>
-                                                            <TableCell align="right">View Details</TableCell>
-                                                            </TableRow>)} else {
-                                                            return null
-                                                        }
-                                                        }) :
-                                                        <TableRow>
-                                                            <TableCell>
-                                                                'Loading'
-                                                            </TableCell>
-                                                        </TableRow>}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </TabPanel>
-                                    </Box>
+                                    <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
+                                        <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
+                                        <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
+                                    </Tabs>
+                                    <TabPanel value={agreementValue} index={0}>
+                                         <TableContainer>
+                                            <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
+                                                <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
+                                                    <TableCell sx={{ width: '25%' }} align="left">Assistant</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="right">More</TableCell>
+                                                </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                {user.employer.task_agreements.map((agreement) => {
+                                                    if (agreement.is_completed === false) {
+                                                    return (<TableRow
+                                                        key={agreement.id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                        <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                            {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                        </TableCell>
+                                                        <TableCell align="left">Hello</TableCell>
+                                                        <TableCell align="left">{agreement.assistant.company_name}</TableCell>
+                                                        <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
+                                                        <TableCell align="left">{agreement.created_at}</TableCell>
+                                                        <TableCell align="right">View Details</TableCell>
+                                                        </TableRow>)} else {
+                                                        return null
+                                                    }
+                                                    })}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </TabPanel>
+                                    <TabPanel value={agreementValue} index={1}>
+                                    <TableContainer>
+                                            <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
+                                                <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
+                                                    <TableCell sx={{ width: '25%' }} align="left">Assistant</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="right">More</TableCell>
+                                                </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                {user.employer.task_agreements.map((agreement) => {
+                                                    if (agreement.is_completed === true) {
+                                                    return (<TableRow
+                                                        key={agreement.id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                        <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                            {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                        </TableCell>
+                                                        <TableCell align="left">Hello</TableCell>
+                                                        <TableCell align="left">{agreement.assistant.company_name}</TableCell>
+                                                        <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
+                                                        <TableCell align="left">{agreement.created_at}</TableCell>
+                                                        <TableCell align="right">View Details</TableCell>
+                                                        </TableRow>)} else {
+                                                        return (
+                                                            <Grid key={agreement.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    No Previously Completed Agreements
+                                                                </Typography>
+                                                            </Grid>
+                                                        )
+                                                    }
+                                                    })}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </TabPanel>
+                                </Box>
+                                    : <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                            <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                No Agreements Have Been Made Yet
+                                            </Typography>
+                                        </Grid>}
                                     {/* <Typography variant='h2' sx={{ paddingTop: '50px' }}>
                                         Agreements
                                     </Typography>
@@ -358,7 +382,7 @@ import { UserContext } from '../context/user';
                                             </TableContainer>
                                         </Grid>
                                     </Box> */}
-                                    <Typography variant='h2' sx={{ paddingTop: '50px' }}>
+                                    <Typography variant='h2' sx={{ paddingTop: '50px' }} id="reviews">
                                         Reviews
                                     </Typography>
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
@@ -402,7 +426,53 @@ import { UserContext } from '../context/user';
                                             </TableContainer>
                                         </Grid>
                                     </Box>
-                                    <Divider variant="middle" />
+                                    <Typography variant='h2' sx={{ paddingTop: '50px' }} id="info">
+                                        Info
+                                    </Typography>
+                                    <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Name
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.employer ? user.employer.company_name : "Loading"}
+                                                </Typography>
+                                                <EditOutlinedIcon/>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Bio
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.employer ? `${user.employer.company_bio.slice(0,50)}...` : "Loading"}
+                                                </Typography>
+                                                <EditOutlinedIcon/>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Company Start Date
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.employer ? user.employer.company_start_date : "Loading"}
+                                                </Typography>
+                                                <EditOutlinedIcon/>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", color: "red" }}>
+                                            Delete Employer Profile
+                                        </Typography>
+                                    </Box>
                                 </Grid>
                             </Grid>
                         </Grid>
