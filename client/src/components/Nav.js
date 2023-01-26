@@ -75,11 +75,12 @@ import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 // import AdbIcon from '@mui/icons-material/Adb';
 import { UserContext } from '../context/user';
+import Link from '@mui/material/Link';
 
 // import { useTheme } from '@mui/material/styles'
 
 const pages = ['Categories', 'Login'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Logout'];
 const ariaLabel = { 'aria-label': 'description' };
 
 const Nav = () => {
@@ -255,7 +256,9 @@ const Nav = () => {
                     >
                     {settings.map((setting) => (
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Typography textAlign="center">{setting}</Typography>
+                            <Link href={`/${setting}`} underline="hover">
+                                <Typography textAlign="center">{setting}</Typography>
+                            </Link>
                         </MenuItem>
                     ))}
                     </Menu>
