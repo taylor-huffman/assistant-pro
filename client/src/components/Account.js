@@ -1,24 +1,13 @@
 import React, { useContext } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Box, Divider } from '@mui/material'
+import { Typography, Box, Divider, Link } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { UserContext } from '../context/user';
 
 function Account() {
   
-  // const [account, setAccount] = useState([])
-  const { user, setUser } = useContext(UserContext)
-
-    // useEffect(() => {
-    //     fetch('/accounts/1')
-    //     .then(r => r.json())
-    //     .then(account => {
-    //         setAccount(account)
-    //     })
-    // }, [])
-
-    console.log(user)
+  const { user } = useContext(UserContext)
 
     return (
         <>
@@ -51,16 +40,20 @@ function Account() {
                             </Typography>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '30px 0' }}>
-                                    <Grid xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '48%' }}>
+                                    <Link underline='hover' href="/account/profile-assistant" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                        <Grid>
                                             <Typography variant="p" sx={{ fontWeight: '900' }}>
                                                 Manage Assistant Profile
                                             </Typography>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '48%' }}>
+                                        </Grid>
+                                    </Link>
+                                    <Link underline='hover' href="/account/profile-employer" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                        <Grid>
                                             <Typography variant="p" sx={{ fontWeight: '900' }}>
-                                                Create Employer Profile
+                                                Manage Employer Profile
                                             </Typography>
-                                    </Grid>
+                                        </Grid>
+                                    </Link>
                                 </Grid>
                             </Box>
                             <Divider variant="middle" />
