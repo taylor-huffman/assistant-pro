@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :assistants
   resources :accounts
   post "/login", to: "sessions#create"
+  get "/auth", to: "accounts#show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
