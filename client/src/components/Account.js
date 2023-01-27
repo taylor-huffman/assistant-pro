@@ -40,20 +40,34 @@ function Account() {
                             </Typography>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '30px 0' }}>
-                                    <Link underline='hover' href="/account/profile-assistant" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                    {user.assistant ? <Link underline='hover' href="/account/profile-assistant" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
                                         <Grid>
                                             <Typography variant="p" sx={{ fontWeight: '900' }}>
                                                 Manage Assistant Profile
                                             </Typography>
                                         </Grid>
                                     </Link>
-                                    <Link underline='hover' href="/account/profile-employer" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                    : <Link underline='hover' href="/account/profile-assistant/create" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                    <Grid>
+                                        <Typography variant="p" sx={{ fontWeight: '900' }}>
+                                            Create Assistant Profile
+                                        </Typography>
+                                    </Grid>
+                                </Link>}
+                                    {user.employer ? <Link underline='hover' href="/account/profile-employer" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
                                         <Grid>
                                             <Typography variant="p" sx={{ fontWeight: '900' }}>
                                                 Manage Employer Profile
                                             </Typography>
                                         </Grid>
                                     </Link>
+                                    : <Link underline='hover' href="/account/profile-employer/create" xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '45%' }}>
+                                    <Grid>
+                                        <Typography variant="p" sx={{ fontWeight: '900' }}>
+                                            Create Employer Profile
+                                        </Typography>
+                                    </Grid>
+                                </Link>}
                                 </Grid>
                             </Box>
                             <Divider variant="middle" />
