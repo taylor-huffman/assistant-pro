@@ -71,16 +71,17 @@ import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Input from '@mui/material/Input'
-import { InputAdornment } from '@mui/material';
+import { Button, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 // import AdbIcon from '@mui/icons-material/Adb';
 import { UserContext } from '../context/user';
 import Link from '@mui/material/Link';
+import { useHistory } from 'react-router-dom';
 
 // import { useTheme } from '@mui/material/styles'
 
 const pages = ['Categories', 'Login'];
-const settings = ['Profile', 'Account', 'Logout'];
+const settings = ['Account', 'Logout'];
 const ariaLabel = { 'aria-label': 'description' };
 
 const Nav = () => {
@@ -88,6 +89,7 @@ const Nav = () => {
     const { user, setUser } = useContext(UserContext)
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const history = useHistory()
 
     const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -103,6 +105,20 @@ const Nav = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogOut = (event) => {
+        handleCloseUserMenu(event)
+        fetch('/logout', {
+            method: 'DELETE'
+        }).then(r => {
+            if (r.ok) {
+                setUser('')
+                history.push('/login')
+            } else {
+                r.json().then(data => console.log(data))
+            }
+        })
+    }
 
     return (
         <AppBar position="static" sx={{
@@ -132,12 +148,14 @@ const Nav = () => {
                 >
                     LOGO
                 </Typography> */}
-                <Box sx={{ 
-                    display: { xs: 'none', md: 'flex' },
-                }}>
-                    <img alt="Assistant Pro Logo" src={require('../media/assistantpro-logo-dark.png')} style={{ marginRight: 'auto', maxWidth: '250px' }} />
-                </Box>
-                <Box sx={{ 
+                <Link href='/' sx={{ marginRight: 'auto' }}>
+                    <Box sx={{ 
+                        display: { xs: 'none', md: 'flex' },
+                    }}>
+                        <img alt="Assistant Pro Logo" src={require('../media/assistantpro-logo-dark.png')} style={{ marginRight: 'auto', maxWidth: '250px' }} />
+                    </Box>
+                </Link>
+                {/* <Box sx={{ 
                     flexGrow: 1,
                     marginLeft: '1.5rem',
                     display: { xs: 'none', md: 'flex' }
@@ -156,7 +174,7 @@ const Nav = () => {
                         borderRadius: '2rem',
                         padding: '0 .5rem'
                     }} />
-                </Box>
+                </Box> */}
                 <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                     <IconButton
                     size="large"
@@ -219,25 +237,30 @@ const Nav = () => {
                 <img alt="Assistant Pro Logo" src={require('../media/assistantpro-logo-dark.png')} style={{ marginRight: 'auto', maxWidth: '180px' }} />
                 </Box>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    {pages.map((page) => (
-                    <ListItem
+                <ListItem
                         component="a"
-                        href={`/${page}`}
-                        key={page}
+                        href={'/search/assistants'}
                         onClick={handleCloseNavMenu}
                         sx={{ my: 2, color: 'black', display: 'block', padding: '0 10px' }}
                     >
-                        <ListItemText primary={page} />
+                        <ListItemText primary='Search' />
                     </ListItem>
-                    ))}
+                    {user ? null : <ListItem
+                        component="a"
+                        href={'/login'}
+                        onClick={handleCloseNavMenu}
+                        sx={{ my: 2, color: 'black', display: 'block', padding: '0 10px' }}
+                    >
+                        <ListItemText primary='Log In' />
+                    </ListItem>}
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>
-                    <Tooltip title="Open settings">
+                    {user ? <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                         <Avatar alt="Remy Sharp" /*src="../media/taylorheadshot.jpg"*/ />
                     </IconButton>
-                    </Tooltip>
+                    </Tooltip> : <Link href='/login?signup=1' underline="none"><Button variant="contained" sx={{ borderRadius: '30px' }}>Sign Up</Button></Link> }
                     <Menu
                     sx={{ mt: '45px' }}
                     id="menu-appbar"
@@ -254,17 +277,20 @@ const Nav = () => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                     >
-                    {settings.map((setting) => (
-                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                            <Link href={`/${setting}`} underline="hover">
-                                <Typography textAlign="center">{setting}</Typography>
+                        <MenuItem onClick={handleCloseUserMenu}>
+                            <Link href={'/account'} underline="hover">
+                                <Typography textAlign="center">Account</Typography>
                             </Link>
                         </MenuItem>
-                    ))}
+                        <MenuItem onClick={handleLogOut}>
+                            <Link underline="hover">
+                                <Typography textAlign="center">Log Out</Typography>
+                            </Link>
+                        </MenuItem>
                     </Menu>
                 </Box>
                 </Toolbar>
-                <Box sx={{ 
+                {/* <Box sx={{ 
                     display: { xs: 'flex', md: 'none' }
                 }}>
                     <Input
@@ -283,7 +309,7 @@ const Nav = () => {
                         width: '100%',
                         marginBottom: '1rem'
                     }} />
-                </Box>
+                </Box> */}
             </Container>
         </AppBar>
     );
