@@ -1,11 +1,15 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link } from '@mui/material'
+import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
+import DisplayModal from './DisplayModal';
+
   
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -43,10 +47,35 @@ import { UserContext } from '../context/user';
 function ProfileAssistant() {
     
     // const [account, setAccount] = useState({})
-    // const [employer, setEmployer] = useState([])
+    // const [assistant, setAssistant] = useState([])
     const { user, setUser } = useContext(UserContext)
     const [taskPostValue, setTaskPostValue] = React.useState(0)
     const [agreementValue, setAgreementValue] = React.useState(0);
+    const [open, setOpen] = React.useState(false);
+    const [editStatus, setEditStatus] = React.useState(false)
+    const [editCompanyNameInput, setEditCompanyNameInput] = React.useState('')
+    const [editCompanyBioInput, setEditCompanyBioInput] = React.useState('')
+    const [editCompanyStartDateInput, setEditCompanyStartDateInput] = React.useState('')
+    const [editCompanyHourlyRateInput, setEditCompanyHourlyRateInput] = React.useState('')
+    // const [editCompanyCategoryInput, setEditCompanyCategoryInput] = React.useState({})
+    const [currentCategoryObject, setCurrentCategoryObject] = React.useState({})
+    const [currentDeleteData, setCurrentDeleteData] = React.useState({})
+    const [currentDeleteModel, setCurrentDeleteModel] = React.useState('')
+    const [categoriesFetch, setCategoriesFetch] = React.useState([])
+    const [openDisplayModal, setOpenDisplayModal] = React.useState(false)
+    const [currentDisplayData, setCurrentDisplayData] = React.useState({})
+    const [currentDisplayModel, setCurrentDisplayModel] = React.useState('')
+    const handleOpenDisplay = () => setOpenDisplayModal(true)
+    const handleCloseDisplay = () => setOpenDisplayModal(false)
+
+
+    useEffect(() => {
+        fetch('/task_categories')
+        .then(r => {
+            r.ok ? r.json().then(data => setCategoriesFetch(data))
+            : r.json().then(error => console.log(error))
+        })
+    }, [])
 
     const handleAgreementChange = (event, newValue) => {
         setAgreementValue(newValue);
@@ -55,6 +84,80 @@ function ProfileAssistant() {
     const handleTaskPostChange = (event, newValue) => {
         setTaskPostValue(newValue);
     };
+
+    const handleOpenDeleteModal = (data, model) => {
+        setCurrentDeleteData(data)
+        setCurrentDeleteModel(model)
+        setOpen(true)
+    }
+
+    const handleChangeEditStatus = () => {
+        setEditStatus(!editStatus)
+    }
+
+    const handleEditNameChange = (e) => {
+        setEditCompanyNameInput(e.target.value)
+    }
+
+    const handleEditBioChange = (e) => {
+        setEditCompanyBioInput(e.target.value)
+    }
+
+    const handleEditStartDateChange = (e) => {
+        setEditCompanyStartDateInput(e.target.value)
+    }
+
+    const handleEditHourlyRateChange = (e) => {
+        setEditCompanyHourlyRateInput(e.target.value)
+    }
+
+    // const handleEditCompanyCategoryChange = (e) => {
+    //     setEditCompanyCategoryInput(e.target.value)
+    //     setCurrentCategoryObject(categoriesFetch.filter(category => category.name !== e.target.value))
+    // }
+
+    const handleOpenDisplayModalOnClick = (data, model) => {
+        handleOpenDisplay()
+        setCurrentDisplayData(data)
+        setCurrentDisplayModel(model)
+        // console.log('open')
+    }
+
+    const handleEditInfo = (name, bio, startDate, hourlyRate, category) => {
+        console.log(name, bio, startDate, hourlyRate, category)
+        setEditCompanyNameInput(name)
+        setEditCompanyBioInput(bio)
+        setEditCompanyStartDateInput(startDate)
+        setEditCompanyHourlyRateInput(hourlyRate)
+        // setEditCompanyCategoryInput(category)
+        setEditStatus(!editStatus)
+    }
+
+    const handleSaveEdit = () => {
+        fetch(`/assistants/${user.assistant.id}`, {
+            method: 'PATCH',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                ...user.assistant,
+                company_name: editCompanyNameInput,
+                company_bio: editCompanyBioInput,
+                company_start_date: editCompanyStartDateInput,
+                company_hourly_rate: editCompanyHourlyRateInput,
+                // task_category: {currentCategoryObject}
+            })
+        })
+        .then(r => {
+            if (r.ok) {
+                r.json().then(data => {
+                    console.log(data)
+                    setUser({...user, assistant: data})
+                    handleChangeEditStatus()
+                })
+            }
+        })
+    }
 
     // useEffect(() => {
     //     fetch('/accounts/1')
@@ -65,10 +168,10 @@ function ProfileAssistant() {
     // }, [])
 
     // useEffect(() => {
-    //     fetch('/employers/1')
+    //     fetch('/assistants/1')
     //     .then(r => r.json())
-    //     .then(employer => {
-    //         setEmployer(employer)
+    //     .then(assistant => {
+    //         setAssistant(assistant)
     //     })
     // }, [])
     console.log(user)
@@ -101,11 +204,11 @@ function ProfileAssistant() {
                                             Agreements
                                         </Typography>
                                     </Link>
-                                    <Link href="#categories" underline='hover'>
+                                    {/* <Link href="#categories" underline='hover'>
                                         <Typography>
                                             Categories
                                         </Typography>
-                                    </Link>
+                                    </Link> */}
                                     <Link href="#info" underline='hover'>
                                         <Typography>
                                             Info
@@ -115,36 +218,161 @@ function ProfileAssistant() {
                             </Box>
                         </Grid>
                         <Grid item xs={10} sx={{ padding: '0.4rem 2.5rem',  }}>
-                            <Typography variant='h2'>
+                            {/* <Typography variant='h2'>
                                 What would you like to do today?
-                            </Typography>
+                            </Typography> */}
                             <Box sx={{ flexGrow: 1 }}>
-                                <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '30px 0' }}>
-                                    <Grid xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '48%' }}>
+                                <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 0 30px' }}>
+                                    <Grid xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '100%' }}>
                                             <Typography variant="p" sx={{ fontWeight: '900' }}>
-                                                Find An Assistant
-                                            </Typography>
-                                    </Grid>
-                                    <Grid xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '48%' }}>
-                                            <Typography variant="p" sx={{ fontWeight: '900' }}>
-                                                Post A Job
+                                                Find A Job
                                             </Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
                             <Divider variant="middle" />
-                            <Grid item xs={12}>
-                                <Typography variant='h2' sx={{ paddingTop: '50px' }} id="agreements">
+                            <Grid item xs={12} sx={{ padding: '0' }}>
+
+                            <Typography variant='h2' sx={{ paddingTop: '50px' }} id="agreements">
+                                        Agreements
+                                    </Typography>
+                                    {user.assistant && user.assistant.task_agreements.length > 0 ?
+                                    <Box sx={{ width: '100%' }}>
+                                    <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
+                                        <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
+                                        <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
+                                    </Tabs>
+                                    <TabPanel value={agreementValue} index={0}>
+                                         <TableContainer>
+                                            <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
+                                                <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
+                                                    <TableCell sx={{ width: '25%' }} align="left">Employer</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="right"></TableCell>
+                                                </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                {user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).length > 0 ? user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).map(agreement => {
+                                                                return (<TableRow
+                                                                    key={agreement.id}
+                                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                                    >
+                                                                    <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                                        {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                                    </TableCell>
+                                                                    <TableCell align="left">{agreement.task_category.name}</TableCell>
+                                                                    <TableCell align="left">{agreement.employer.company_name}</TableCell>
+                                                                    <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
+                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="right" sx={{ paddingRight: '0'  }}><Button onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
+                                                                    </TableRow>)
+                                                        }) : <TableRow>
+                                                            <TableCell align="left" sx={{ paddingLeft: '0', border: '0' }}>No Active Agreements</TableCell>
+                                                        </TableRow> }
+                                                {/* {user.assistant.task_agreements.map((agreement) => {
+                                                    if (agreement.is_completed === false) {
+                                                    return (<TableRow
+                                                        key={agreement.id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                        <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                            {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                        </TableCell>
+                                                        <TableCell align="left">Hello</TableCell>
+                                                        <TableCell align="left">{agreement.assistant.company_name}</TableCell>
+                                                        <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
+                                                        <TableCell align="left">{agreement.created_at}</TableCell>
+                                                        <TableCell align="right" sx={{ paddingRight: '0'  }}><EditOutlinedIcon sx={{ marginLeft: 'auto'}} />
+                                                    <DeleteOutlineOutlinedIcon/></TableCell>
+                                                        </TableRow>)} else {
+                                                        return null
+                                                    }
+                                                    })} */}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </TabPanel>
+                                    <TabPanel value={agreementValue} index={1}>
+                                    <TableContainer>
+                                            <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
+                                                <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{ paddingLeft: '0', width: '25%' }}>Job</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Category</TableCell>
+                                                    <TableCell sx={{ width: '25%' }} align="left">Employer</TableCell>
+                                                    <TableCell sx={{ width: '8%' }} align="left">Price</TableCell>
+                                                    <TableCell sx={{ width: '17%' }} align="left">Date</TableCell>
+                                                    <TableCell sx={{ width: '17%', paddingRight: '0' }} align="right"></TableCell>
+                                                </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                {user.assistant.task_agreements.filter(agreement => agreement.is_completed === true).length > 0 ? user.assistant.task_agreements.filter(agreement => agreement.is_completed === true).map(agreement => {
+                                                                return (<TableRow
+                                                                    key={agreement.id}
+                                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                                    >
+                                                                    <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                                        {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                                    </TableCell>
+                                                                    <TableCell align="left">{agreement.task_category.name}</TableCell>
+                                                                    <TableCell align="left">{agreement.employer.company_name}</TableCell>
+                                                                    <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
+                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="right" sx={{ paddingRight: '0'  }}><Button onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
+                                                                    </TableRow>)
+                                                        }) : <TableRow>
+                                                            <TableCell align="left" sx={{ paddingLeft: '0', border: '0' }}>No Completed Agreements</TableCell>
+                                                        </TableRow> }
+                                                {/* {user.assistant.task_agreements.map((agreement) => {
+                                                    if (agreement.is_completed === true) {
+                                                    return (<TableRow
+                                                        key={agreement.id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                        <TableCell component="th" scope="row" sx={{ paddingLeft: '0' }}>
+                                                            {`${agreement.task_post.task_description.slice(0,20)}...`}
+                                                        </TableCell>
+                                                        <TableCell align="left">Hello</TableCell>
+                                                        <TableCell align="left">{agreement.assistant.company_name}</TableCell>
+                                                        <TableCell align="left">{`$${agreement.hourly_rate}`}</TableCell>
+                                                        <TableCell align="left">{agreement.created_at}</TableCell>
+                                                        <TableCell align="right">View</TableCell>
+                                                        </TableRow>)} else {
+                                                        return (
+                                                            <Grid key={agreement.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                                    No Previously Completed Agreements
+                                                                </Typography>
+                                                            </Grid>
+                                                        )
+                                                    }
+                                                    })} */}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </TabPanel>
+                                </Box>
+                                    : <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                            <Typography variant='p' component='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins', paddingTop: '20px' }}>
+                                                You Don't Have Any Agreements Yet
+                                            </Typography>
+                                        </Grid>}
+
+                                {/* <Typography variant='h2' sx={{ paddingTop: '50px' }} id="agreements">
                                     Agreements
                                 </Typography>
                                 <Box sx={{ width: '100%' }}>
                                     {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}> */}
-                                        <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
+                                        {/* <Tabs value={agreementValue} sx={{ marginBottom: '15px' }} onChange={handleAgreementChange} aria-label="basic tabs example">
                                         <Tab label="Active" sx={{ textTransform: "none" }} {...a11yProps(0)} />
                                         <Tab label="Previous" sx={{ textTransform: "none" }} {...a11yProps(1)} />
-                                        </Tabs>
+                                        </Tabs> */}
                                     {/* </Box> */}
-                                    <TabPanel value={agreementValue} index={0}>
+                                    {/* <TabPanel value={agreementValue} index={0}>
                                          <TableContainer>
                                             <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
                                                 <TableHead>
@@ -226,7 +454,7 @@ function ProfileAssistant() {
                                             </Table>
                                         </TableContainer>
                                     </TabPanel>
-                                </Box>
+                                </Box> */}
                                 {/* <Typography variant='h2' sx={{ paddingTop: '50px' }}>
                                     Agreements
                                 </Typography>
@@ -245,7 +473,7 @@ function ProfileAssistant() {
                                                 </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                {user.employer ? user.employer.task_agreements.map((agreement) => (
+                                                {user.assistant ? user.assistant.task_agreements.map((agreement) => (
                                                     <TableRow
                                                         key={agreement.id}
                                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -270,24 +498,23 @@ function ProfileAssistant() {
                                         </TableContainer>
                                     </Grid>
                                 </Box> */}
-                                <Typography variant='h2' sx={{ paddingTop: '50px' }} id="categories">
+                                {/* <Typography variant='h2' sx={{ paddingTop: '50px' }} id="categories">
                                     Categories
                                 </Typography>
                                 <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
                                     <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
                                         <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
                                             <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
-                                                {user.assistant ? user.assistant.task_categories.map(category => {
-                                                    return <Button key={category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginRight: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
-                                                        {category.name}
+                                                {user.assistant ? <Button key={user.assistant.task_category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginRight: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
+                                                        {user.assistant.task_category.name}
                                                     </Button>
-                                                }) : "Loading"}
+                                                : "Loading"}
                                             </Typography>
                                             <EditOutlinedIcon/>
                                         </Grid>
                                     </Grid>
-                                </Box>
-                                <Typography variant='h2' sx={{ paddingTop: '50px' }} id="info">
+                                </Box> */}
+                                {/* <Typography variant='h2' sx={{ paddingTop: '50px' }} id="info">
                                     Info
                                 </Typography>
                                 <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
@@ -346,11 +573,205 @@ function ProfileAssistant() {
                                     <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", color: "red" }}>
                                         Delete Assistant Profile
                                     </Typography>
-                                </Box>
+                                </Box> */}
+                                <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '50px 3px 10px' }}>
+                                    <Typography variant='h2' sx={{ marginRight: 'auto' }} id="info">
+                                        Info
+                                    </Typography>
+                                    {editStatus ? <><CheckOutlinedIcon onClick={handleSaveEdit} />
+                                            <CloseOutlinedIcon onClick={() => handleEditInfo(user.assistant.company_name, user.assistant.company_bio, user.assistant.company_start_date, user.assistant.company_hourly_rate, user.assistant.task_category.name)} /></>
+                                            : <EditOutlinedIcon onClick={() => handleEditInfo(user.assistant.company_name, user.assistant.company_bio, user.assistant.company_start_date, user.assistant.company_hourly_rate, user.assistant.task_category.name)} />}
+                                    </Grid>
+                                    <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Name
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                            {editStatus ? <TextField onChange={handleEditNameChange} value={editCompanyNameInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                            : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                            {user.assistant ? user.assistant.company_name : "Loading"}
+                                        </Typography>
+                                        </>}
+                                        </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Bio
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                {editStatus ? <TextField multiline rows={4} onChange={handleEditBioChange} value={editCompanyBioInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                                    : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? `${user.assistant.company_bio.slice(0,50)}...` : "Loading"}
+                                                    </Typography>
+                                                </>}
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Company Start Date
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                {editStatus ?
+                                                // <TextField onChange={handleEditStartDateChange} value={editCompanyStartDateInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                                <TextField
+                                                    id="outlined-company-start-date"
+                                                    type="date"
+                                                    name="company_start_date"
+                                                    value={editCompanyStartDateInput}
+                                                    onChange={handleEditStartDateChange}
+                                                    // sx={{ width: 220 }}
+                                                    InputLabelProps={{
+                                                    shrink: true,
+                                                    }}
+                                                    size='small'
+                                                    sx={{ marginRight: 'auto', width: '75%' }}
+                                                />
+                                                : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                {user.assistant ? user.assistant.company_start_date : "Loading"}
+                                                </Typography>
+                                                </>}
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Company Hourly Rate
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                {editStatus ?
+                                                    // <TextField onChange={handleEditStartDateChange} value={editCompanyStartDateInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                                    <TextField
+                                                        id="outlined-company-hourly-rate"
+                                                        type="number"
+                                                        name="company_hourly_rate"
+                                                        value={editCompanyHourlyRateInput}
+                                                        onChange={handleEditHourlyRateChange}
+                                                        // sx={{ width: 220 }}
+                                                        InputLabelProps={{
+                                                        shrink: true,
+                                                        }}
+                                                        size='small'
+                                                        sx={{ marginRight: 'auto', width: '75%' }}
+                                                    />
+                                                : <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? `$${user.assistant.company_hourly_rate}/hr` : "Loading"}
+                                                </Typography>}
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    {/* <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Category
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '75%' }}>
+                                                {editStatus ?
+                                                    // <TextField onChange={handleEditStartDateChange} value={editCompanyStartDateInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                                    // <TextField
+                                                    //     id="outlined-task-category"
+                                                    //     type="number"
+                                                    //     name="task_category"
+                                                    //     value={editCompanyCategoryInput}
+                                                    //     onChange={handleEditCompanyCategoryChange}
+                                                    //     // sx={{ width: 220 }}
+                                                    //     InputLabelProps={{
+                                                    //     shrink: true,
+                                                    //     }}
+                                                    //     size='small'
+                                                    //     sx={{ marginRight: 'auto', width: '75%' }}
+                                                    // />
+                                                    <FormControl sx={{ width: '100%' }}>
+                                                        {/* <InputLabel id="demo-simple-select-label">Task Category</InputLabel> */}
+                                                            {/* <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            name='task_category'
+                                                            value={editCompanyCategoryInput}
+                                                            // label='Task Category'
+                                                            onChange={handleEditCompanyCategoryChange}
+                                                            size='small'
+                                                            >
+                                                            {categoriesFetch.map((category) => (
+                                                                <MenuItem
+                                                                key={category.name}
+                                                                value={category.name}
+                                                                //   style={getStyles(category.name, personName, theme)}
+                                                                >
+                                                                {category.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select> */}
+                                                    {/* </FormControl> */}
+                                                {/* : <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? <Button key={user.assistant.task_category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginRight: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
+                                                            {user.assistant.task_category.name}
+                                                        </Button>
+                                                    : "Loading"}
+                                                </Typography>}
+                                            </Grid>
+                                        </Grid> */}
+                                    {/* </Box> */}
+                                    {/* <Typography variant='h2' sx={{ paddingTop: '50px' }} id="info">
+                                        Info
+                                    </Typography>
+                                    <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Name
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                            {editStatus ? <><TextField onChange={handleEditChange} value={editInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                            <SaveOutlinedIcon onClick={handleSaveEdit} />
+                                            <CloseOutlinedIcon onClick={() => handleEditInfo(user.assistant.company_name)} /></>
+                                            : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                            {user.assistant ? user.assistant.company_name : "Loading"}
+                                        </Typography>
+                                        <EditOutlinedIcon onClick={() => handleEditInfo(user.assistant.company_name)} /></>}
+                                        </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
+                                            Company Bio
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? `${user.assistant.company_bio.slice(0,50)}...` : "Loading"}
+                                                </Typography>
+                                                <EditOutlinedIcon/>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Company Start Date
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? user.assistant.company_start_date : "Loading"}
+                                                </Typography>
+                                                <EditOutlinedIcon/>
+                                            </Grid>
+                                        </Grid>
+                                    </Box> */}
+                                    <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        <Button onClick={() => handleOpenDeleteModal(user.assistant, 'assistants')} variant='outlined' color='error'>
+                                            Delete Assistant Profile
+                                        </Button>
+                                    </Box>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Box>
+                <DisplayModal open={openDisplayModal} handleClose={handleCloseDisplay} user={user} setUser={setUser} currentDisplayData={currentDisplayData} setCurrentDisplayData={setCurrentDisplayData} currentDisplayModel={currentDisplayModel} setCurrentDisplayModel={setCurrentDisplayModel} />
             </Container>
         </>
     )
