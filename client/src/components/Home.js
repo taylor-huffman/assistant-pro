@@ -49,7 +49,7 @@ function Home() {
                             Regain time and ease your stress! Find qualified assistants today to fulfill your project needs.
                         </Typography>
                         <Box sx={{ marginTop: '2.5rem' }}>
-                            <Button variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
+                            <Button href='/search/assistants' variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                 Find An Assistant
                             </Button>
                             <Button variant="contained" color="secondary" sx={{  borderRadius: '1.5rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
