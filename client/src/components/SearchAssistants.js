@@ -363,7 +363,6 @@ function SearchAssistants() {
                                 </Grid> */}
                                 <Box sx={{ 
                                     flexGrow: 1,
-                                    marginLeft: '1.5rem',
                                     marginBottom: '30px',
                                     display: { xs: 'none', md: 'flex' }
                                 }}>
