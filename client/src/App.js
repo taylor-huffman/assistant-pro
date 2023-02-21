@@ -5,6 +5,8 @@ import Body from './components/Body'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import Footer from "./components/Footer";
 import { UserProvider } from '../src/context/user';
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 const theme = createTheme({
   palette: {
@@ -130,15 +132,17 @@ function App() {
   // }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <UserProvider>
-        <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Nav/>
-          <Body/>
-          <Footer/>
-        </div>
-      </UserProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <ThemeProvider theme={theme}>
+        <UserProvider>
+          <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Nav/>
+            <Body/>
+            <Footer/>
+          </div>
+        </UserProvider>
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 
