@@ -3,5 +3,6 @@ class TaskPostSerializer < ActiveModel::Serializer
 
   belongs_to :employer
   has_one :task_agreement
-  has_many :task_categories
+  has_one :task_post_category
+  has_one :task_category
 end
