@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Button, TextField, Box, Typography, Tabs, Tab } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react'
+import { Button, TextField, Box, Typography, Tabs, Tab, Alert } from '@mui/material';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import { useHistory } from 'react-router-dom'
@@ -39,23 +39,33 @@ function TabPanel(props) {
 
 function Login() {
 
-    const { setUser } = useContext(UserContext)
+    useEffect(() => {
+        checkSignupParam()
+    }, [])
+
+    const { setUser, isAuth, setIsAuth } = useContext(UserContext)
     const history = useHistory()
-    const [value, setValue] = React.useState(0);
-    const [signupFormData, setSignupFormData] = React.useState({
+    const [value, setValue] = useState(0);
+    const [signupFormData, setSignupFormData] = useState({
         name: '',
         address: '',
         phone: '',
         email: '',
         password: ''
     });
-    const [loginFormData, setLoginFormData] = React.useState({
+    const [loginFormData, setLoginFormData] = useState({
         email: '',
         password: ''
     });
+    const [error, setError] = useState('')
 
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
+        setError('')
+        setLoginFormData({
+            email: '',
+            password: ''
+        })
     };
 
     function handleSignUpFormChange(event) {
@@ -91,6 +101,7 @@ function Login() {
         .then(data => {
             console.log(data)
             setUser(data)
+            setIsAuth(true)
             history.push('/account')
         })
       }
@@ -104,13 +115,49 @@ function Login() {
             },
             body: JSON.stringify(loginFormData)
         })
-        .then(r => r.json())
-        .then(data => {
-            console.log(data)
-            setUser(data)
-            history.push('/account')
+        .then(r => {
+            r.ok ? r.json().then(data => {
+                setUser(data)
+                console.log(isAuth)
+                setIsAuth(true)
+                console.log(isAuth)
+                history.push('/account')
+            })
+            : r.json().then(error => {
+                console.log(error)
+                setError(error.error.login)
+                setLoginFormData({
+                    email: '',
+                    password: ''
+                })
+            })
         })
       }
+
+        const urlParams = new URL(window.location.href).searchParams;
+        const signup = urlParams.get('signup');
+        const checkSignupParam = () => {
+            if (signup) {
+                setValue(1)
+            } else return
+        }
+
+    //   function handleLoginSubmit(e) {
+    //     e.preventDefault()
+    //     fetch(`/login`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(loginFormData)
+    //     })
+    //     .then(r => r.json())
+    //     .then(data => {
+    //         console.log(data)
+    //         setUser(data)
+    //         history.push('/account')
+    //     })
+    //   }
 
     return (
         <Box sx={{ marginTop: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -135,6 +182,7 @@ function Login() {
                         <Typography variant='h2' component='h2'>
                             Login
                         </Typography>
+                        {error ? <Alert severity="error" sx={{ width: '92%!important' }}>{error}</Alert> : null}
                         <TextField
                             id="outlined-email"
                             label="Email"
