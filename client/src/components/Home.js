@@ -52,7 +52,7 @@ function Home() {
                             <Button href='/search/assistants' variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                 Find An Assistant
                             </Button>
-                            <Button variant="contained" color="secondary" sx={{  borderRadius: '1.5rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
+                            <Button href="/account/profile-employer/post" variant="contained" color="secondary" sx={{  borderRadius: '1.5rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                 Post A Job
                             </Button>
                         </Box>
