@@ -112,7 +112,7 @@ function Login() {
             body: formData
         })
         .then(r => {
-            r.ok ? r.json.then(data => {
+            r.ok ? r.json().then(data => {
                 console.log(data)
                 // setUser(data)
                 // setIsAuth(true)
