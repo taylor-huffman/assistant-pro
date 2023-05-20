@@ -233,12 +233,13 @@ function ProfileAssistantCreate() {
         task_category: ''
     })
     const [categoriesFetch, setCategoriesFetch] = useState([])
-    // const [error, setError] = useState('')
+    const [error, setError] = useState('')
 
 
     function handleSignUpFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
+        setError('')
         
         setSignupFormData({
           ...signupFormData,
@@ -249,6 +250,7 @@ function ProfileAssistantCreate() {
     function handleFormSelectChange(event) {
         const name = event.target.name;
         let value = event.target.value;
+        setError('')
         
         setSignupFormSelect({
           [name]: value,
@@ -262,22 +264,96 @@ function ProfileAssistantCreate() {
 
     function handleSignupSubmit(e) {
         e.preventDefault()
-        fetch(`/assistants`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({...signupFormData, account_id: user.id})
-        })
-        .then(r => r.json())
-        .then(data => {
-            console.log(data)
-            setUser({...user, assistant: data})
-            history.push('/account/profile-assistant')
-        })
+
+        async function assistant() {
+            const response = await fetch(`/assistants`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({...signupFormData, account_id: user.id})
+            })
+            return response
+        }
+
+        async function taskCategory() {
+            const response = await fetch(`/assistant_tasks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category).id, assistant_id: user.id})
+            })
+            return response
+        }
+
+        if (assistant().ok && taskCategory().ok) {
+            return assistant().then(data => {
+                console.log(data)
+            })
+        } else {
+            console.log('not ok')
+        }
+
+        // fetch(`/assistants`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({...signupFormData, account_id: user.id})
+        // })
+        // .then(r => {
+        //     r.ok ? r.json().then(data => {
+        //         console.log(data)
+        //         setUser({...user, assistant: data})
+        //         history.push('/account/profile-assistant')
+        //     })
+        //     : r.json().then(error => {
+        //         console.log(error)
+        //         setError(error.error)
+        //         setSignupFormData({
+        //             company_name: '',
+        //             company_bio: '',
+        //             company_start_date: '',
+        //             hourly_rate: '',
+        //         })
+        //         setSignupFormSelect({
+        //             task_category: ''
+        //         })
+        //     })
+        // })
+
+        // fetch(`/assistant_tasks`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category).id, assistant_id: user.id})
+        // })
+        // .then(r => {
+        //     r.ok ? r.json().then(data => {
+        //         console.log(data)
+        //         setUser({...user, assistant: data})
+        //         history.push('/account/profile-assistant')
+        //     })
+        //     : r.json().then(error => {
+        //         console.log(error)
+        //         setError(error.error)
+        //         setSignupFormData({
+        //             company_name: '',
+        //             company_bio: '',
+        //             company_start_date: '',
+        //             hourly_rate: '',
+        //         })
+        //         setSignupFormSelect({
+        //             task_category: ''
+        //         })
+        //     })
+        // })
       }
 
-      console.log(user)
+      console.log(error)
+      
 
     //   function handleLoginSubmit(e) {
     //     e.preventDefault()
@@ -323,6 +399,17 @@ function ProfileAssistantCreate() {
     //     })
     //   }
 
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+    PaperProps: {
+        style: {
+        maxHeight: ITEM_HEIGHT * 3.5 + ITEM_PADDING_TOP,
+        width: 250,
+        },
+    },
+    };
+
     return (
         <Box sx={{ marginTop: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Box sx={{ marginTop: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -339,6 +426,9 @@ function ProfileAssistantCreate() {
                         <Typography variant='h2' component='h2'>
                             Create Assistant Profile
                         </Typography>
+                        {error ? error.map(err => {
+                            return <Alert key={err} severity="error" sx={{ width: '92%!important' }}>{err}</Alert>
+                        }) : null}
                         {/* <TextField
                             id="outlined-company-name"
                             label="Company Name"
@@ -397,6 +487,7 @@ function ProfileAssistantCreate() {
                                     value={signupFormSelect.task_category}
                                     label='Task Category'
                                     onChange={handleFormSelectChange}
+                                    MenuProps={MenuProps}
                                     >
                                     {categoriesFetch.map((category) => (
                                         <MenuItem

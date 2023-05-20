@@ -258,7 +258,7 @@ const Nav = () => {
                 <Box sx={{ flexGrow: 0 }}>
                     {user ? <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" /*src="../media/taylorheadshot.jpg"*/ />
+                        <Avatar alt="Remy Sharp" src={user.image} />
                     </IconButton>
                     </Tooltip> : <Link href='/login?signup=1' underline="none"><Button variant="contained" sx={{ borderRadius: '30px' }}>Sign Up</Button></Link> }
                     <Menu

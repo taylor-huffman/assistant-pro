@@ -1,5 +1,5 @@
 class TaskAgreementSerializer < ActiveModel::Serializer
-  attributes :id, :hourly_rate, :task_agreement_notes, :is_completed, :task_post, :assistant, :review, :created_at, :updated_at
+  attributes :id, :hourly_rate, :task_agreement_notes, :is_completed, :assistant, :review, :task_category, :employer, :task_post, :created_at, :updated_at
 
   belongs_to :assistant
   belongs_to :employer

@@ -256,7 +256,7 @@ function ProfileAssistant() {
                                                 </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                {user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).length > 0 ? user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).map(agreement => {
+                                                {user.assistant && user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).length > 0 ? user.assistant.task_agreements.filter(agreement => agreement.is_completed === false).map(agreement => {
                                                                 return (<TableRow
                                                                     key={agreement.id}
                                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

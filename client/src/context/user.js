@@ -9,7 +9,7 @@ function UserProvider({ children }) {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        fetch('/accounts/1')
+        fetch('/auth')
         .then(r => {
             if (r.ok) {
                 r.json().then(user => {

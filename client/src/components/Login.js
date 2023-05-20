@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, TextField, Box, Typography, Tabs, Tab, Alert } from '@mui/material';
+import { Button, TextField, Box, Typography, Tabs, Tab, Alert, Avatar } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import { useHistory } from 'react-router-dom'
@@ -51,8 +52,10 @@ function Login() {
         address: '',
         phone: '',
         email: '',
-        password: ''
+        password: '',
+        password_confirmation: ''
     });
+    const [profilePicture, setProfilePicture] = useState('')
     const [loginFormData, setLoginFormData] = useState({
         email: '',
         password: ''
@@ -71,6 +74,7 @@ function Login() {
     function handleSignUpFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
+        setError('')
         
         setSignupFormData({
           ...signupFormData,
@@ -81,6 +85,7 @@ function Login() {
     function handleLoginFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
+        setError('')
         
         setLoginFormData({
           ...loginFormData,
@@ -90,19 +95,41 @@ function Login() {
 
       function handleSignupSubmit(e) {
         e.preventDefault()
+        const formData = new FormData()
+        formData.append('image', profilePicture)
+        formData.append('name', signupFormData.name)
+        formData.append('address', signupFormData.address)
+        formData.append('phone', signupFormData.phone)
+        formData.append('email', signupFormData.email)
+        formData.append('password', signupFormData.password)
+        formData.append('password_confirmation', signupFormData.password_confirmation)
+
         fetch(`/accounts`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(signupFormData)
+            // headers: {
+            //     'Content-Type': 'application/json'
+            // },
+            body: formData
         })
-        .then(r => r.json())
-        .then(data => {
-            console.log(data)
-            setUser(data)
-            setIsAuth(true)
-            history.push('/account')
+        .then(r => {
+            r.ok ? r.json.then(data => {
+                console.log(data)
+                // setUser(data)
+                // setIsAuth(true)
+                // history.push('/account')
+            })
+            : r.json().then(error => {
+                console.log(error)
+                setError(error.error)
+                setSignupFormData({
+                    name: '',
+                    address: '',
+                    phone: '',
+                    email: '',
+                    password: '',
+                    password_confirmation: ''
+                })
+            })
         })
       }
 
@@ -125,7 +152,7 @@ function Login() {
             })
             : r.json().then(error => {
                 console.log(error)
-                setError(error.error.login)
+                setError(error.error)
                 setLoginFormData({
                     email: '',
                     password: ''
@@ -140,6 +167,20 @@ function Login() {
             if (signup) {
                 setValue(1)
             } else return
+        }
+
+        const handleChangeProfilePicture = (e) => {
+            // // const [file] = e.target.files[0]
+            // console.log(e.target.files[0])
+            
+            // // if (file) {
+            // //     let image = URL.createObjectURL(file)
+            // //     setProfilePicture(image)
+            // // }
+            // let image = URL.createObjectURL(e.target.files[0])
+            // setProfilePicture(image)
+            console.log(e.target.files[0])
+            setProfilePicture(e.target.files[0])
         }
 
     //   function handleLoginSubmit(e) {
@@ -182,7 +223,9 @@ function Login() {
                         <Typography variant='h2' component='h2'>
                             Login
                         </Typography>
-                        {error ? <Alert severity="error" sx={{ width: '92%!important' }}>{error}</Alert> : null}
+                        {error ? error.map(err => {
+                            return <Alert key={err} severity="error" sx={{ width: '92%!important' }}>{err}</Alert>
+                        }) : null}
                         <TextField
                             id="outlined-email"
                             label="Email"
@@ -218,6 +261,9 @@ function Login() {
                         <Typography variant='h2' component='h2'>
                             Signup
                         </Typography>
+                        {error ? error.map(err => {
+                            return <Alert key={err} severity="error" sx={{ width: '92%!important' }}>{err}</Alert>
+                        }) : null}
                         <TextField
                             id="outlined-name"
                             label="Name"
@@ -258,6 +304,22 @@ function Login() {
                             type="password"
                             onChange={handleSignUpFormChange}
                         />
+                        <TextField
+                            id="outlined-password-confirmation"
+                            label="Confirm Password"
+                            name="password_confirmation"
+                            value={signupFormData.password_confirmation}
+                            type="password"
+                            onChange={handleSignUpFormChange}
+                        />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Avatar sx={{ width: 56, height: 56, marginRight: '10px' }} src={profilePicture ? URL.createObjectURL(profilePicture) : null} />
+                            <Button sx={{ height: 'fit-content' }} variant="outlined" component="label">
+                                Upload Profile Picture
+                                <input hidden accept="image/png, image/jpeg" type="file" onChange={e => handleChangeProfilePicture(e)} />
+                            </Button>
+                            {/* <Typography>{profilePicture ? profilePicture : 'No image selected'}</Typography> */}
+                        </Box>
                         <Button variant="contained" type='submit'>Submit</Button>
                     </Box>
                 </Box>

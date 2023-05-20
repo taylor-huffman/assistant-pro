@@ -9,7 +9,7 @@ skip_before_action :authorize, only: [:create, :destroy]
             session[:account_id] = account.id
             render json: account, status: :created
         else
-            render json: { error: {login: "Invalid email or password"} }, status: :unauthorized
+            render json: { error: ["Invalid email or password"] }, status: :unauthorized
         end
     end
 
