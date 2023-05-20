@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
     end
 
     def show
-        account = Account.find(session[:user_id])
+        account = Account.find(session[:account_id])
         render json: account, include: ['assistant', 'assistant.task_agreements', 'assistant.task_agreements.task_category', 'assistant.task_agreements.employer', 'employer', 'employer.task_posts', 'employer.task_posts.task_post_category', 'employer.task_posts.task_category', 'employer.task_agreements', 'employer.task_agreements.task_category', 'employer.reviews.task_post', 'employer.reviews.assistant', 'employer.assistants']
     end
 
