@@ -7,13 +7,13 @@ class AssistantTasksController < ApplicationController
     end
 
     def create
-        assistant_task = AssistantTask.create!
+        assistant_task = AssistantTask.create!(assistant_task_params)
         render json: assistant_task
     end
 
     private
 
-    def user_params
+    def assistant_task_params
         params.permit(:assistant_id, :task_category_id)
     end
 

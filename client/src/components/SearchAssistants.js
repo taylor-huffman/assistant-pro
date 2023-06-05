@@ -400,7 +400,7 @@ function SearchAssistants() {
                                 {filteredAssistants.length > 0 ? filteredAssistants.map(assistant => {
                                     return <Grid key={assistant.id} sx={{ width: '100%', display: 'flex' }}>
                                     <Grid item>
-                                        <Avatar sx={{ minWidth: '80px', minHeight: '80px' }} />
+                                        <Avatar src={assistant.account.image} sx={{ minWidth: '80px', minHeight: '80px' }} />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Box sx={{ display: 'flex' }}>

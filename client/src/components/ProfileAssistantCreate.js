@@ -227,7 +227,7 @@ function ProfileAssistantCreate() {
         company_name: '',
         company_bio: '',
         company_start_date: '',
-        hourly_rate: '',
+        company_hourly_rate: '',
     });
     const [signupFormSelect, setSignupFormSelect] = useState({
         task_category: ''
@@ -258,98 +258,93 @@ function ProfileAssistantCreate() {
     }
 
     
-
     console.log(signupFormData)
     console.log(signupFormSelect)
 
     function handleSignupSubmit(e) {
         e.preventDefault()
 
-        async function assistant() {
-            const response = await fetch(`/assistants`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({...signupFormData, account_id: user.id})
-            })
-            return response
-        }
+        // async function assistant() {
+        //     const response = await fetch(`/assistants`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({...signupFormData, account_id: user.id})
+        //     })
+        //     return response
+        // }
 
-        async function taskCategory() {
-            const response = await fetch(`/assistant_tasks`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category).id, assistant_id: user.id})
-            })
-            return response
-        }
+        // async function taskCategory() {
+        //     const response = await fetch(`/assistant_tasks`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category).id, assistant_id: user.id})
+        //     })
+        //     return response
+        // }
 
-        if (assistant().ok && taskCategory().ok) {
-            return assistant().then(data => {
-                console.log(data)
-            })
-        } else {
-            console.log('not ok')
-        }
-
-        // fetch(`/assistants`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({...signupFormData, account_id: user.id})
-        // })
-        // .then(r => {
-        //     r.ok ? r.json().then(data => {
+        // if (assistant().ok && taskCategory().ok) {
+        //     return assistant().then(data => {
         //         console.log(data)
-        //         setUser({...user, assistant: data})
-        //         history.push('/account/profile-assistant')
         //     })
-        //     : r.json().then(error => {
-        //         console.log(error)
-        //         setError(error.error)
-        //         setSignupFormData({
-        //             company_name: '',
-        //             company_bio: '',
-        //             company_start_date: '',
-        //             hourly_rate: '',
-        //         })
-        //         setSignupFormSelect({
-        //             task_category: ''
-        //         })
-        //     })
-        // })
+        // } else {
+        //     console.log('not ok')
+        // }
 
-        // fetch(`/assistant_tasks`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category).id, assistant_id: user.id})
-        // })
-        // .then(r => {
-        //     r.ok ? r.json().then(data => {
-        //         console.log(data)
-        //         setUser({...user, assistant: data})
-        //         history.push('/account/profile-assistant')
-        //     })
-        //     : r.json().then(error => {
-        //         console.log(error)
-        //         setError(error.error)
-        //         setSignupFormData({
-        //             company_name: '',
-        //             company_bio: '',
-        //             company_start_date: '',
-        //             hourly_rate: '',
-        //         })
-        //         setSignupFormSelect({
-        //             task_category: ''
-        //         })
-        //     })
-        // })
+        fetch(`/assistants`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({...signupFormData, account_id: user.id})
+        })
+        .then(r => {
+            r.ok ? r.json().then(assistantData => {
+                fetch(`/assistant_tasks`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category)[0].id, assistant_id: assistantData.id})
+                })
+                .then(r => {
+                    r.ok ? r.json().then(assistantTaskData => {
+                        console.log(assistantTaskData)
+                        setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category}})
+                        history.push('/account/profile-assistant')
+                    })
+                    : r.json().then(error => {
+                        console.log(error)
+                        setError(error.error)
+                        setSignupFormData({
+                            company_name: '',
+                            company_bio: '',
+                            company_start_date: '',
+                            company_hourly_rate: '',
+                        })
+                        setSignupFormSelect({
+                            task_category: ''
+                        })
+                    })
+                })
+            })
+            : r.json().then(error => {
+                console.log(error)
+                setError(error.error)
+                setSignupFormData({
+                    company_name: '',
+                    company_bio: '',
+                    company_start_date: '',
+                    company_hourly_rate: '',
+                })
+                setSignupFormSelect({
+                    task_category: ''
+                })
+            })
+        })
       }
 
       console.log(error)
@@ -505,8 +500,8 @@ function ProfileAssistantCreate() {
                             id="outlined-hourly-rate"
                             label="Hourly Rate"
                             type="number"
-                            name="hourly_rate"
-                            value={signupFormData.hourly_rate}
+                            name="company_hourly_rate"
+                            value={signupFormData.company_hourly_rate}
                             onChange={handleSignUpFormChange}
                             // sx={{ width: 220 }}
                             // InputLabelProps={{
