@@ -3,7 +3,7 @@ class AssistantsController < ApplicationController
 
     def index
         assistants = Assistant.all
-        render json: assistants, include: [:reviews]
+        render json: assistants
     end
 
     def show

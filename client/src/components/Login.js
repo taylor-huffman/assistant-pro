@@ -114,9 +114,9 @@ function Login() {
         .then(r => {
             r.ok ? r.json().then(data => {
                 console.log(data)
-                // setUser(data)
-                // setIsAuth(true)
-                // history.push('/account')
+                setUser(data)
+                setIsAuth(true)
+                history.push('/account')
             })
             : r.json().then(error => {
                 console.log(error)

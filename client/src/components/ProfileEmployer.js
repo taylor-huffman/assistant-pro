@@ -351,12 +351,12 @@ import DisplayModal from './DisplayModal';
                                     </Typography>
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
-                                            {user.employer && user.employer.assistants.length > 0 ? <Grid key={user.assistant.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%', alignItems: 'center' }}>
+                                            {user.employer && user.employer.assistants.length > 0 ? user.employer.assistants.map(assistant => <Grid key={assistant.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%', alignItems: 'center' }}>
                                                     <Avatar sx={{ marginRight: '10px' }} aria-label="assistant">
                                                                 
                                                     </Avatar>
                                                     <Typography variant='p' component="p" sx={{ fontFamily: 'Poppins' }}>
-                                                        {user.assistant.company_name}
+                                                        {assistant.company_name}
                                                     </Typography>
                                                     {/* {user.assistant.task_categories.map(category => {
                                                         return (
@@ -365,8 +365,8 @@ import DisplayModal from './DisplayModal';
                                                             </Button>
                                                         )
                                                     })} */}
-                                                    {user.assistant.task_category ? <Button key={user.assistant.task_category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginLeft: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
-                                                                {user.assistant.task_category.name}
+                                                    {assistant.task_category ? <Button key={assistant.task_category.id} variant="outlined" size='small' color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', marginLeft: '10px', padding: '.4rem 1.2rem', boxShadow: 'none', fontSize: '.8rem' }}>
+                                                                {assistant.task_category.name}
                                                             </Button>
                                                             : 'Loading...'}
                                                     {/* <Button variant="outlined" color="primary" sx={{  borderRadius: '1.5rem', marginBottom: '0', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
@@ -374,7 +374,7 @@ import DisplayModal from './DisplayModal';
                                                     </Button> */}
                                                     {/* <EditOutlinedIcon sx={{ marginLeft: 'auto' }} />
                                                     <DeleteOutlineOutlinedIcon/> */}
-                                                </Grid>
+                                                </Grid>)
                                             : <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins', paddingTop: '10px' }}>
                                             You Don't Have Any Assitants Yet
                                         </Typography>}

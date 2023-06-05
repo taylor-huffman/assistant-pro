@@ -10,6 +10,7 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import DisplayModal from './DisplayModal';
+import ChooseAssistantModal from './ChooseAssistantModal'
 
   
     // function TabPanel(props) {
@@ -69,7 +70,10 @@ function SearchAssistants() {
     const [assistants, setAssistants] = React.useState([])
     const handleOpenDisplay = () => setOpenDisplayModal(true)
     const handleCloseDisplay = () => setOpenDisplayModal(false)
+    const handleClose = () => setOpen(false);
+    const [currentAssistant, setCurrentAssistant] = React.useState({})
     
+    console.log(user)
     // const arr = []
     
     // const catToBoolean = () => {
@@ -265,6 +269,11 @@ function SearchAssistants() {
     // }, [])
     console.log(user)
 
+    const handleOpenChooseAssistant = (assistant) => {
+        setOpen(true)
+        setCurrentAssistant(assistant)
+    }
+
     return (
         <>
             <Container maxWidth="lg" sx={{ padding: '5rem 1rem' }}>
@@ -389,7 +398,7 @@ function SearchAssistants() {
                             <Divider variant="middle" />
                             <Grid item xs={12} sx={{ padding: '0' }}>
                                 {filteredAssistants.length > 0 ? filteredAssistants.map(assistant => {
-                                    return <Grid key={assistant.id} sx={{ width: '100%', display: 'flex' }} onClick={() => console.log('click')}>
+                                    return <Grid key={assistant.id} sx={{ width: '100%', display: 'flex' }}>
                                     <Grid item>
                                         <Avatar sx={{ minWidth: '80px', minHeight: '80px' }} />
                                     </Grid>
@@ -399,14 +408,14 @@ function SearchAssistants() {
                                                 <Typography sx={{ fontWeight: 'bold', color: '#538F39', display: 'flex', alignItems: 'center' }}>
                                                     {assistant.company_name} {assistant.average_rating ? <><Rating name="average_rating" size='small' precision={0.1} value={assistant.average_rating} readOnly sx={{ marginLeft: '10px' }} /><span style={{ fontWeight: '500', color: 'lightgray', marginLeft: '10px', fontSize: '14px'}}>{assistant.average_rating}</span></> : <span style={{ fontWeight: '500', color: 'lightgray', marginLeft: '10px', fontSize: '14px' }}>No Reviews</span>}
                                                 </Typography>
-                                                <Typography sx={{ fontWeight: '700' }}>
-                                                    {`$${assistant.company_hourly_rate}/hr`}
+                                                <Typography sx={{ fontWeight: '700', display: 'flex', alignItems: 'center' }}>
+                                                    {`$${assistant.company_hourly_rate}/hr`} {assistant.task_category ? <Button sx={{ borderRadius: '30px', fontSize: '14px', marginLeft: '8px', padding: '0 10px' }}>
+                                                    {assistant.task_category.name}
+                                                </Button> : null}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ marginLeft: 'auto' }}>
-                                                {assistant.task_category ? <Button variant='outlined' sx={{ borderRadius: '30px', fontSize: '14px' }}>
-                                                    {assistant.task_category.name}
-                                                </Button> : null}
+                                                <Button onClick={() => {handleOpenChooseAssistant(assistant)}} variant='outlined' sx={{ borderRadius: '30px', fontSize: '14px' }}>Choose Assistant</Button>
                                             </Box>
                                         </Box>
                                         <Box sx={{ marginLeft: 'auto' }}>
@@ -423,6 +432,7 @@ function SearchAssistants() {
                 </Box>
                 <DisplayModal open={openDisplayModal} handleClose={handleCloseDisplay} user={user} setUser={setUser} currentDisplayData={currentDisplayData} setCurrentDisplayData={setCurrentDisplayData} currentDisplayModel={currentDisplayModel} setCurrentDisplayModel={setCurrentDisplayModel} />
             </Container>
+            <ChooseAssistantModal open={open} handleClose={handleClose} user={user} setUser={setUser} currentDeleteData={currentDeleteData} currentDeleteModel={currentDeleteModel} assistant={currentAssistant} />
         </>
     )
 }
