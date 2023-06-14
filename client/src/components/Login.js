@@ -55,7 +55,7 @@ function Login() {
         password: '',
         password_confirmation: ''
     });
-    const [profilePicture, setProfilePicture] = useState('')
+    const [profilePicture, setProfilePicture] = useState()
     const [loginFormData, setLoginFormData] = useState({
         email: '',
         password: ''
@@ -107,7 +107,7 @@ function Login() {
         fetch(`/accounts`, {
             method: 'POST',
             // headers: {
-            //     'Content-Type': 'application/json'
+            //     'Content-Type': 'multipart/form-data'
             // },
             body: formData
         })
@@ -201,7 +201,7 @@ function Login() {
     //   }
 
     return (
-        <Box sx={{ marginTop: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Box sx={{ marginTop: '8vh', marginBottom: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', maxWidth: '400px', width: '90%' }}>
                 <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
                 <Tab label="Login" {...a11yProps(0)} />
@@ -250,6 +250,7 @@ function Login() {
                 <Box sx={{ marginTop: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <Box
                         component="form"
+                        // encType='multipart/form-data'
                         sx={{
                             '& > :not(style)': { m: 1, width: '100%' },
                             display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
@@ -315,7 +316,7 @@ function Login() {
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Avatar sx={{ width: 56, height: 56, marginRight: '10px' }} src={profilePicture ? URL.createObjectURL(profilePicture) : null} />
                             <Button sx={{ height: 'fit-content' }} variant="outlined" component="label">
-                                Upload Profile Picture
+                                Upload Profile Image
                                 <input hidden accept="image/png, image/jpeg" type="file" onChange={e => handleChangeProfilePicture(e)} />
                             </Button>
                             {/* <Typography>{profilePicture ? profilePicture : 'No image selected'}</Typography> */}

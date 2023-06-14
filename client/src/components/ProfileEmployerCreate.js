@@ -13,12 +13,13 @@ function ProfileEmployerCreate() {
         company_bio: '',
         company_start_date: ''
     });
-    // const [error, setError] = useState('')
+    const [error, setError] = useState('')
 
 
     function handleSignUpFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
+        setError('')
         
         setSignupFormData({
           ...signupFormData,
@@ -38,13 +39,21 @@ function ProfileEmployerCreate() {
             },
             body: JSON.stringify({...signupFormData, account_id: user.id})
         })
-        .then(r => r.json())
-        .then(data => {
-            console.log(data)
-            setUser({...user, employer: data})
-            history.push('/account/profile-employer')
+        .then(r => {
+            if (r.ok) {
+                return r.json().then(data => {
+                    console.log(data)
+                    setUser({...user, employer: data})
+                    history.push('/account/profile-employer')
+            })} else {
+                return r.json().then(error => {
+                    console.log(error)
+                    setError(error.error)
+                })
+            }
         })
-      }
+        
+        }
 
     //   function handleLoginSubmit(e) {
     //     e.preventDefault()
@@ -106,6 +115,9 @@ function ProfileEmployerCreate() {
                         <Typography variant='h2' component='h2'>
                             Create Employer
                         </Typography>
+                        {error ? error.map(err => {
+                            return <Alert key={err} severity="error" sx={{ width: '92%!important' }}>{err}</Alert>
+                        }) : null}
                         <TextField
                             id="outlined-company-name"
                             label="Company Name"

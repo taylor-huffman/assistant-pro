@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
 before_action :authorize
-skip_before_action :authorize, only: [:create, :destroy]
+skip_before_action :authorize, only: [:create]
 
     def create
         account = Account.find_by(email: params[:email])
@@ -21,10 +21,10 @@ skip_before_action :authorize, only: [:create, :destroy]
     private
 
     def authorize
-        return render json: { errors: ["Not authorized"] }, status: :unauthorized unless session.include? :account_id
+        return render json: { error: ["Not authorized"] }, status: :unauthorized unless session.include? :account_id
     end
     
     def render_unprocessable_entity_response(invalid)
-        render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
+        render json: { error: invalid.record.errors.full_messages }, status: :unprocessable_entity
     end
 end

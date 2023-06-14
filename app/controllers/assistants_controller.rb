@@ -1,5 +1,8 @@
 class AssistantsController < ApplicationController
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity
+    rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
+    before_action :authorize
+    skip_before_action :authorize, only: [:index, :show]
 
     def index
         assistants = Assistant.all
@@ -12,35 +15,53 @@ class AssistantsController < ApplicationController
     end
 
     def create
-        assistant = Assistant.create!(user_params)
+        current_user = Account.find(session[:account_id])
+        assistant = current_user.create_assistant!(assistant_params)
         render json: assistant
     end
 
     def update
-        assistant = Assistant.find(params[:id])
-        assistant.update(
-            company_name: params[:company_name],
-            company_bio: params[:company_bio],
-            company_start_date: params[:company_start_date],
-            company_hourly_rate: params[:company_hourly_rate]
-        )
-        render json: assistant
+        current_user = Account.find(session[:account_id])
+        assistant = current_user.assistant
+        if assistant.id == params[:id].to_i
+            assistant.update!(assistant_params)
+            render json: assistant
+        else
+            render json: { error: ["Sorry, you're not authorized"] }, status: :unauthorized
+        end
     end
 
     def destroy
-        assistant = Assistant.find(params[:id])
-        assistant.destroy
-        head :no_content
+        current_user = Account.find(session[:account_id])
+        assistant = current_user.assistant
+        if assistant.id == params[:id].to_i
+            assistant.destroy
+            head :no_content
+        else
+            render json: { error: ["Sorry, you're not authorized"] }, status: :unauthorized
+        end
     end
 
     private
 
-    def user_params
+    def assistant_params
         params.permit(:company_name, :company_bio, :company_start_date, :company_hourly_rate, :account_id)
     end
 
     def render_unprocessable_entity(invalid)
         render json: { error: invalid.record.errors.full_messages }, status: :unprocessable_entity
+    end
+
+    def render_not_found_response(error)
+        render json: { error: [error.message] }, status: :not_found
+    end
+
+    # def current_user
+    #     @current_user ||= Account.find(session[:account_id])
+    # end
+    
+    def authorize
+        return render json: { error: "Not authorized" }, status: :unauthorized unless session.include? :account_id
     end
 
 end

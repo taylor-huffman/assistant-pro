@@ -72,8 +72,19 @@ function SearchAssistants() {
     const handleCloseDisplay = () => setOpenDisplayModal(false)
     const handleClose = () => setOpen(false);
     const [currentAssistant, setCurrentAssistant] = React.useState({})
+
+    useEffect(() => {
+        checkSignupParam()
+    }, [])
+
+    const urlParams = new URL(window.location.href).searchParams;
+    const category = urlParams.get('category');
+    const checkSignupParam = () => {
+        if (category) {
+            setSearchValue(category)
+        } else return
+    }
     
-    console.log(user)
     // const arr = []
     
     // const catToBoolean = () => {

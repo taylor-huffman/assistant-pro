@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
+import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -9,6 +9,7 @@ import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import DisplayModal from './DisplayModal';
+import DeleteModal from './DeleteModal'
 
   
     function TabPanel(props) {
@@ -67,6 +68,31 @@ function ProfileAssistant() {
     const [currentDisplayModel, setCurrentDisplayModel] = React.useState('')
     const handleOpenDisplay = () => setOpenDisplayModal(true)
     const handleCloseDisplay = () => setOpenDisplayModal(false)
+    const [signupFormSelect, setSignupFormSelect] = useState({
+        task_category: `${user.assistant.task_category.name}`
+    })
+    const [error, setError] = React.useState('')
+
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+    PaperProps: {
+        style: {
+        maxHeight: ITEM_HEIGHT * 3.5 + ITEM_PADDING_TOP,
+        width: 250,
+        },
+    },
+    };
+
+    function handleFormSelectChange(event) {
+        const name = event.target.name;
+        let value = event.target.value;
+        setError('')
+        
+        setSignupFormSelect({
+          [name]: value,
+        });
+    }
 
 
     useEffect(() => {
@@ -84,6 +110,8 @@ function ProfileAssistant() {
     const handleTaskPostChange = (event, newValue) => {
         setTaskPostValue(newValue);
     };
+
+    const handleClose = () => setOpen(false);
 
     const handleOpenDeleteModal = (data, model) => {
         setCurrentDeleteData(data)
@@ -131,6 +159,7 @@ function ProfileAssistant() {
         setEditCompanyHourlyRateInput(hourlyRate)
         // setEditCompanyCategoryInput(category)
         setEditStatus(!editStatus)
+        setError('')
     }
 
     const handleSaveEdit = () => {
@@ -148,14 +177,59 @@ function ProfileAssistant() {
                 // task_category: {currentCategoryObject}
             })
         })
+        // .then(r => {
+        //     if (r.ok) {
+        //         r.json().then(data => {
+        //             console.log(data)
+        //             setUser({...user, assistant: data})
+        //             handleChangeEditStatus()
+        //         })
+        //     }
+        // })
         .then(r => {
-            if (r.ok) {
-                r.json().then(data => {
-                    console.log(data)
-                    setUser({...user, assistant: data})
-                    handleChangeEditStatus()
+            r.ok ? r.json().then(assistantData => {
+                fetch(`/assistant_tasks/${user.assistant.assistant_task.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({task_category_id: categoriesFetch.filter(cat => cat.name === signupFormSelect.task_category)[0].id, assistant_id: assistantData.id})
                 })
-            }
+                .then(r => {
+                    r.ok ? r.json().then(assistantTaskData => {
+                        console.log(assistantTaskData)
+                        setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category, assistant_task: {...user.assistant.assistant_task, task_category_id: assistantTaskData.task_category_id }}})
+                        handleChangeEditStatus()
+                        setError('')
+                    })
+                    : r.json().then(error => {
+                        console.log(error)
+                        setError(error.error)
+                        // setSignupFormData({
+                        //     company_name: '',
+                        //     company_bio: '',
+                        //     company_start_date: '',
+                        //     company_hourly_rate: '',
+                        // })
+                        // setSignupFormSelect({
+                        //     task_category: ''
+                        // })
+                    })
+                })
+            })
+            : r.json().then(error => {
+                console.log(error)
+                setError(error.error)
+                // setSignupFormData({
+                //     company_name: '',
+                //     company_bio: '',
+                //     company_start_date: '',
+                //     company_hourly_rate: '',
+                // })
+                // setSignupFormSelect({
+                //     task_category: ''
+                // })
+            })
         })
     }
 
@@ -175,6 +249,7 @@ function ProfileAssistant() {
     //     })
     // }, [])
     console.log(user)
+    console.log(signupFormSelect)
 
     return (
         <>
@@ -583,6 +658,9 @@ function ProfileAssistant() {
                                             : <EditOutlinedIcon onClick={() => handleEditInfo(user.assistant.company_name, user.assistant.company_bio, user.assistant.company_start_date, user.assistant.company_hourly_rate, user.assistant.task_category.name)} />}
                                     </Grid>
                                     <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        {error ? error.map(err => {
+                                            return <Alert key={err} severity="error" sx={{ width: '75%!important', marginBottom: '10px' }}>{err}</Alert>
+                                        }) : null}
                                         <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
                                             Company Name
                                         </Typography>
@@ -656,11 +734,65 @@ function ProfileAssistant() {
                                                         InputLabelProps={{
                                                         shrink: true,
                                                         }}
+                                                        InputProps={{ inputProps: { min: 0 } }}
                                                         size='small'
                                                         sx={{ marginRight: 'auto', width: '75%' }}
                                                     />
                                                 : <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
                                                     {user.assistant ? `$${user.assistant.company_hourly_rate}/hr` : "Loading"}
+                                                </Typography>}
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Box sx={{ flexGrow: 1, padding: '0px 0 0' }}>
+                                        <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline' }}>
+                                            Category
+                                        </Typography>
+                                        <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
+                                            <Grid container spacing={1} sx={{ padding: '10px 4px', width: '100%' }}>
+                                                {editStatus ?
+                                                    // <TextField onChange={handleEditStartDateChange} value={editCompanyStartDateInput} size='small' sx={{ marginRight: 'auto', width: '75%' }}></TextField>
+                                                    // <TextField
+                                                    //     id="outlined-company-hourly-rate"
+                                                    //     type="number"
+                                                    //     name="company_hourly_rate"
+                                                    //     value={editCompanyHourlyRateInput}
+                                                    //     onChange={handleEditHourlyRateChange}
+                                                    //     // sx={{ width: 220 }}
+                                                    //     InputLabelProps={{
+                                                    //     shrink: true,
+                                                    //     }}
+                                                    //     size='small'
+                                                    //     sx={{ marginRight: 'auto', width: '75%' }}
+                                                    // />
+
+                                                    <Box sx={{ width: '75%' }}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Task Category</InputLabel>
+                                                            <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            name='task_category'
+                                                            value={signupFormSelect.task_category}
+                                                            label='Task Category'
+                                                            onChange={handleFormSelectChange}
+                                                            MenuProps={MenuProps}
+                                                            >
+                                                            {categoriesFetch.map((category) => (
+                                                                <MenuItem
+                                                                key={category.name}
+                                                                value={category.name}
+                                                                //   style={getStyles(category.name, personName, theme)}
+                                                                >
+                                                                {category.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Box>
+
+                                                : <Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
+                                                    {user.assistant ? `${user.assistant.task_category.name}` : "Loading"}
                                                 </Typography>}
                                             </Grid>
                                         </Grid>
@@ -771,6 +903,7 @@ function ProfileAssistant() {
                         </Grid>
                     </Grid>
                 </Box>
+                <DeleteModal open={open} handleClose={handleClose} user={user} setUser={setUser} currentDeleteData={currentDeleteData} currentDeleteModel={currentDeleteModel} />
                 <DisplayModal open={openDisplayModal} handleClose={handleCloseDisplay} user={user} setUser={setUser} currentDisplayData={currentDisplayData} setCurrentDisplayData={setCurrentDisplayData} currentDisplayModel={currentDisplayModel} setCurrentDisplayModel={setCurrentDisplayModel} />
             </Container>
         </>

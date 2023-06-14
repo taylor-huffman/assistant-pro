@@ -37,7 +37,15 @@ function Body() {
         <>
             <Switch>
                 <Route exact path="/login">
-                    <Login/>
+                    {isLoading ? spinner : (
+                        function() {
+                            if (isAuth) {
+                                return <Redirect to="/account" />
+                            } else {
+                                return <Login/>
+                            }
+                        }
+                    )}
                 </Route>
                 <Route exact path="/account">
                     {/* {isAuth ? <Account/> : <Login/>} */}
@@ -56,7 +64,7 @@ function Body() {
                     {/* {isAuth ? <ProfileEmployer/> : <Login/>} */}
                     {isLoading ? spinner : (
                         function() {
-                            if (isAuth) {
+                            if (isAuth && user.employer) {
                                 return <ProfileEmployer/>
                             } else {
                                 return <Redirect to="/login" />
@@ -69,7 +77,7 @@ function Body() {
                     {/* {isAuth ? <ProfileEmployerCreate/> : <Login/>} */}
                     {isLoading ? spinner : (
                         function() {
-                            if (isAuth) {
+                            if (isAuth && !user.employer) {
                                 return <ProfileEmployerCreate/>
                             } else {
                                 return <Redirect to="/login" />
@@ -82,7 +90,7 @@ function Body() {
                     {/* {isAuth ? <ProfileAssistant/> : <Login/>} */}
                     {isLoading ? spinner : (
                         function() {
-                            if (isAuth) {
+                            if (isAuth && user.assistant) {
                                 return <ProfileAssistant/>
                             } else {
                                 return <Redirect to="/login" />
@@ -95,7 +103,7 @@ function Body() {
                     {/* {isAuth ? <ProfileAssistantCreate/> : <Login/>} */}
                     {isLoading ? spinner : (
                         function() {
-                            if (isAuth) {
+                            if (isAuth && !user.assistant) {
                                 return <ProfileAssistantCreate/>
                             } else {
                                 return <Redirect to="/login" />
@@ -108,7 +116,7 @@ function Body() {
                     {/* {isAuth ? <ProfileAssistantCreate/> : <Login/>} */}
                     {isLoading ? spinner : (
                         function() {
-                            if (isAuth) {
+                            if (isAuth && user.employer) {
                                 return <ProfileEmployerCreateJob/>
                             } else {
                                 return <Redirect to="/login" />

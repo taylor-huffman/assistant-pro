@@ -26,6 +26,8 @@ function UserProvider({ children }) {
         })
     }, [])
 
+    console.log(user)
+
     // function getUser() {
     //     return fetch('/auth')
     //         .then(r => {

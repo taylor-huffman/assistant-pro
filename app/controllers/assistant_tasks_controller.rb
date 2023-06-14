@@ -11,6 +11,12 @@ class AssistantTasksController < ApplicationController
         render json: assistant_task
     end
 
+    def update
+        assistant_task = AssistantTask.find(params[:id])
+        assistant_task.update!(assistant_task_params)
+        render json: assistant_task
+    end
+
     private
 
     def assistant_task_params

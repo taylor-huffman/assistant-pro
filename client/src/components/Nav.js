@@ -86,7 +86,7 @@ const ariaLabel = { 'aria-label': 'description' };
 
 const Nav = () => {
     // const theme = useTheme()
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setIsAuth } = useContext(UserContext)
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const history = useHistory()
@@ -113,6 +113,7 @@ const Nav = () => {
         }).then(r => {
             if (r.ok) {
                 setUser('')
+                setIsAuth(false)
                 history.push('/login')
             } else {
                 r.json().then(data => console.log(data))

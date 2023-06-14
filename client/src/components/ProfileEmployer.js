@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField } from '@mui/material'
+import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField, Alert } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -12,6 +12,7 @@ import { UserContext } from '../context/user';
 import DeleteModal from './DeleteModal'
 import EditModal from './EditModal'
 import DisplayModal from './DisplayModal';
+import ReviewModal from './ReviewModal';
   
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -57,6 +58,7 @@ import DisplayModal from './DisplayModal';
         const [open, setOpen] = React.useState(false);
         const [openEditModal, setOpenEditModal] = React.useState(false)
         const [openDisplayModal, setOpenDisplayModal] = React.useState(false)
+        const [openReviewModal, setOpenReviewModal] = React.useState(false)
         const [currentEditData, setCurrentEditData] = React.useState({})
         const [currentModelEdit, setCurrentModelEdit] = React.useState(null)
         const [currentPostCategories, setCurrentPostCategories] = React.useState([])
@@ -68,13 +70,17 @@ import DisplayModal from './DisplayModal';
         const [currentDeleteModel, setCurrentDeleteModel] = React.useState('')
         const [currentDisplayData, setCurrentDisplayData] = React.useState({})
         const [currentDisplayModel, setCurrentDisplayModel] = React.useState('')
+        const [currentAgreementData, setCurrentAgreementData] = React.useState({})
         const handleOpen = () => setOpen(true);
         const handleClose = () => setOpen(false);
         const handleOpenEdit = () => setOpenEditModal(true)
         const handleCloseEdit = () => setOpenEditModal(false)
+        const handleOpenReview = () => setOpenReviewModal(true)
+        const handleCloseReview = () => setOpenReviewModal(false)
         const handleOpenDisplay = () => setOpenDisplayModal(true)
         const handleCloseDisplay = () => setOpenDisplayModal(false)
         const [categoriesFetch, setCategoriesFetch] = React.useState([])
+        const [error, setError] = React.useState('')
 
         useEffect(() => {
             fetch('/task_categories')
@@ -108,6 +114,7 @@ import DisplayModal from './DisplayModal';
             setEditCompanyBioInput(bio)
             setEditCompanyStartDateInput(startDate)
             setEditStatus(!editStatus)
+            setError('')
         }
 
         const handleChangeEditStatus = () => {
@@ -145,9 +152,14 @@ import DisplayModal from './DisplayModal';
                         console.log(data)
                         setUser({...user, employer: data})
                         handleChangeEditStatus()
+                        setError('')
                     })
-                }
-            })
+                } else {
+                    r.json().then(error => {
+                        console.log(error)
+                        setError(error.error)
+                })
+            }})
         }
 
         const handleOpenEditModalOnClick = (data, model) => {
@@ -162,6 +174,12 @@ import DisplayModal from './DisplayModal';
             handleOpenDisplay()
             setCurrentDisplayData(data)
             setCurrentDisplayModel(model)
+            // console.log('open')
+        }
+
+        const handleOpenReviewModalOnClick = (data) => {
+            handleOpenReview()
+            setCurrentAgreementData(data)
             // console.log('open')
         }
     
@@ -352,7 +370,7 @@ import DisplayModal from './DisplayModal';
                                     <Box sx={{ flexGrow: 1, padding: '10px 0 0' }}>
                                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', padding: '10px 3px' }}>
                                             {user.employer && user.employer.assistants.length > 0 ? user.employer.assistants.map(assistant => <Grid key={assistant.id} container spacing={1} sx={{ padding: '10px 4px', width: '100%', alignItems: 'center' }}>
-                                                    <Avatar sx={{ marginRight: '10px' }} aria-label="assistant">
+                                                    <Avatar src={assistant.account.image} sx={{ marginRight: '10px' }} aria-label="assistant">
                                                                 
                                                     </Avatar>
                                                     <Typography variant='p' component="p" sx={{ fontFamily: 'Poppins' }}>
@@ -470,7 +488,7 @@ import DisplayModal from './DisplayModal';
                                                                     <TableCell align="left">{agreement.assistant.company_name}</TableCell>
                                                                     <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
                                                                     <TableCell align="left">{agreement.created_at}</TableCell>
-                                                                    <TableCell align="right" sx={{ paddingRight: '0'  }}><Button onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
+                                                                    <TableCell align="right" sx={{ paddingRight: '0', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'  }}>{agreement.is_completed && !agreement.review ? <Button style={{ fontSize: '14px' }} onClick={() => handleOpenReviewModalOnClick(agreement)} >Review</Button> : null}<Button style={{ fontSize: '14px' }} onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
                                                                     </TableRow>)
                                                         }) : <TableRow>
                                                             <TableCell align="left" sx={{ paddingLeft: '0', border: '0' }}>No Completed Agreements</TableCell>
@@ -610,6 +628,9 @@ import DisplayModal from './DisplayModal';
                                             : <EditOutlinedIcon onClick={() => handleEditInfo(user.employer.company_name, user.employer.company_bio, user.employer.company_start_date)} />}
                                     </Grid>
                                     <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
+                                        {error ? error.map(err => {
+                                            return <Alert key={err} severity="error" sx={{ width: '75%!important', marginBottom: '10px' }}>{err}</Alert>
+                                        }) : null}
                                         <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
                                             Company Name
                                         </Typography>
@@ -722,6 +743,7 @@ import DisplayModal from './DisplayModal';
                     <DeleteModal open={open} handleClose={handleClose} user={user} setUser={setUser} currentDeleteData={currentDeleteData} currentDeleteModel={currentDeleteModel} />
                     <EditModal open={openEditModal} handleClose={handleCloseEdit} user={user} setUser={setUser} currentEditData={currentEditData} setCurrentEditData={setCurrentEditData} currentModelEdit={currentModelEdit} currentPostCategories={currentPostCategories} setCurrentPostCategories={setCurrentPostCategories} categoriesFetch={categoriesFetch} />
                     <DisplayModal open={openDisplayModal} handleClose={handleCloseDisplay} user={user} setUser={setUser} currentDisplayData={currentDisplayData} setCurrentDisplayData={setCurrentDisplayData} currentDisplayModel={currentDisplayModel} setCurrentDisplayModel={setCurrentDisplayModel} />
+                    <ReviewModal open={openReviewModal} handleClose={handleCloseReview} user={user} setUser={setUser} currentAgreementData={currentAgreementData} setCurrentAgreementData={setCurrentAgreementData}  />
                 </Container>
             </>
         )

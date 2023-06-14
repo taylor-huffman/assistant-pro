@@ -24,7 +24,7 @@ function ProfileEmployerCreateJob() {
         task_category: ''
     })
     const [categoriesFetch, setCategoriesFetch] = useState([])
-    // const [error, setError] = useState('')
+    const [error, setError] = useState('')
 
 
     function handleSignUpFormChange(event) {
@@ -60,33 +60,41 @@ function ProfileEmployerCreateJob() {
             },
             body: JSON.stringify({...signupFormData, employer_id: user.employer.id, is_active: true})
         })
-        .then(r => r.json())
-        .then(post => {
-            console.log(post)
-
-            function findCatObject() {
-                let obj = categoriesFetch.filter(category => category.name === signupFormSelect.task_category)
-                return obj
+        .then(r => {
+            if (r.ok) {
+                return r.json().then(post => {
+                    console.log(post)
+        
+                    function findCatObject() {
+                        let obj = categoriesFetch.filter(category => category.name === signupFormSelect.task_category)
+                        return obj
+                    }
+        
+                    fetch(`/task_post_categories`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({task_post_id: post.id, task_category_id: findCatObject()[0].id})
+                    })
+                    .then(r => r.json())
+                    .then(taskPostCategory => {
+                        console.log(taskPostCategory)
+        
+                        let postWithCategories = {...post, task_category: findCatObject(), task_post_category: taskPostCategory}
+        
+                        setUser({...user, task_post_category: taskPostCategory})
+                        setUser({...user, employer: {...user.employer, task_posts: [...user.employer.task_posts, postWithCategories]}})
+                        history.push('/account/profile-employer')
+                    })
+                })
+            } else {
+                return r.json().then(error => {
+                    setError(error.error)
+                })
             }
-
-            fetch(`/task_post_categories`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({task_post_id: post.id, task_category_id: findCatObject()[0].id})
-            })
-            .then(r => r.json())
-            .then(taskPostCategory => {
-                console.log(taskPostCategory)
-
-                let postWithCategories = {...post, task_category: findCatObject(), task_post_category: taskPostCategory}
-
-                setUser({...user, task_post_category: taskPostCategory})
-                setUser({...user, employer: {...user.employer, task_posts: [...user.employer.task_posts, postWithCategories]}})
-                history.push('/account/profile-employer')
-            })
         })
+        
       }
 
       console.log(user)
@@ -151,6 +159,9 @@ function ProfileEmployerCreateJob() {
                         <Typography variant='h2' component='h2'>
                             Create Job Post
                         </Typography>
+                        {error ? error.map(err => {
+                            return <Alert key={err} severity="error" sx={{ width: '92%!important', marginBottom: '10px' }}>{err}</Alert>
+                        }) : null}
                         {/* <TextField
                             id="outlined-company-name"
                             label="Company Name"
@@ -199,6 +210,7 @@ function ProfileEmployerCreateJob() {
                             name="hourly_rate"
                             value={signupFormData.hourly_rate}
                             onChange={handleSignUpFormChange}
+                            InputProps={{ inputProps: { min: 0 } }}
                             // sx={{ width: 220 }}
                             // InputLabelProps={{
                             // shrink: true,

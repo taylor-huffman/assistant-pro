@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
-import { FormControl, FormControlLabel, Select, InputLabel, MenuItem, TextField } from '@mui/material';
+import { FormControl, FormControlLabel, Select, InputLabel, MenuItem, TextField, Alert } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
@@ -34,6 +34,7 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
         task_agreement_notes: ''
     });
     const [selectedTask, setSelectedTask] = React.useState('');
+    const [error, setError] = React.useState('')
 
     const taskPostsWithoutAgreements = () => {
         const taskPosts = user.employer.task_posts
@@ -75,11 +76,37 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
                 task_post_id: selectedTask
             })
         })
-        .then(r => r.json())
-        .then(data => {
-            setUser({...user, employer: {...user.employer, task_agreements: [...user.employer.task_agreements, data], assistants: [...user.employer.assistants, data.assistant]}})
-            history.push('/account/profile-employer')
+        .then(r => {
+            if (r.ok) {
+                return r.json().then(data => {
+                    fetch(`/task_posts/${selectedTask}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            is_active: false
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(post => {
+                        setUser({...user, employer: {...user.employer, task_agreements: [...user.employer.task_agreements, data], assistants: [...user.employer.assistants, data.assistant], task_posts: [...user.employer.task_posts.map(p => {
+                            if (post.id === p.id) {
+                                return post
+                            } else {
+                                return p
+                            }
+                        })]}})
+                        history.push('/account/profile-employer')
+                    })
+                })
+            } else {
+                return r.json().then(error => {
+                    setError(error.error)
+                })
+            }
         })
+        
       }
 
       const handleTaskSelectChange = (event) => {
@@ -166,8 +193,10 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
                 <Typography>{assistant.task_category ? assistant.task_category.name : null}</Typography>
                 <Typography>{`$${assistant.company_hourly_rate}/hr`}<Rating name="average_rating" size='small' precision={0.1} value={assistant.average_rating} readOnly sx={{ marginLeft: '10px', marginRight: '10px' }} />{assistant.average_rating}</Typography>
                 <Typography>{assistant.company_bio}</Typography>
-                
-                    {user.employer.task_posts ? <FormControl size='small' fullWidth sx={{ margin: '8px 0!important', textAlign: 'left' }}>
+                {error ? error.map(err => {
+                    return <Alert key={err} severity="error" sx={{ width: '92%!important', marginBottom: '10px' }}>{err}</Alert>
+                }) : null}
+                    {user.employer && user.employer.task_posts.filter(post => post.is_active === true).length > 0 ? <FormControl size='small' fullWidth sx={{ margin: '8px 0!important', textAlign: 'left' }}>
                         <InputLabel id="demo-simple-select-label">Select Your Job</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -182,7 +211,7 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
                             })}
                         </Select>
                     </FormControl> : null}
-                    <Box sx={{ marginTop: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    {user.employer && user.employer.task_posts.filter(post => post.is_active === true).length > 0 ? <Box sx={{ marginTop: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <TextField
                             id="outlined-notes"
                             label="Notes"
@@ -193,18 +222,20 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
                             multiline
                             rows={4}
                         />
-                    </Box>
+                    </Box> : null}
                 <Grid sx={{ display: 'flex', flexDirection: 'column' }}>
-                {user.employer.task_posts ? <Stack spacing={2} direction="row" sx={{ marginTop: '30px' }}>
+                {user.employer && user.employer.task_posts.filter(post => post.is_active === true).length > 0 ? <Stack spacing={2} direction="row" sx={{ marginTop: '30px' }}>
                     <Button variant='contained' sx={{ borderRadius: '30px' }} onClick={handleSignupSubmit}>
                         Hire Assistant
                     </Button>
                     <Button variant='text' sx={{ color: 'black', '&:hover': { backgroundColor: '#eeeeee' } }} onClick={handleClose}>
                         Cancel
                     </Button>
-                </Stack> : <><Typography sx={{ marginTop: '30px', fontStyle: 'italic', fontWeight: '700' }}>You must post a job before you can hire an assistant. Click below to post a job.</Typography><Button href="/account/profile-employer/post" variant='contained' sx={{ borderRadius: '30px', marginTop: '30px' }}>
+                </Stack> : <><Typography sx={{ marginTop: '30px', fontStyle: 'italic', fontWeight: '700' }}>{user.employer ? 'You must post a job before you can hire an assistant.' : 'You must create an employer profile and post a job before you can hire an assistant.'}</Typography>{user.employer ? <Button href="/account/profile-employer/post" variant='contained' sx={{ borderRadius: '30px', marginTop: '30px' }}>
                         Post A Job
-                    </Button></>}
+                    </Button> : <Button href="/account/profile-employer/create" variant='contained' sx={{ borderRadius: '30px', marginTop: '30px' }}>
+                        Create Employer Profile
+                    </Button>}</>}
                 </Grid>
             </Box>
             </Fade>

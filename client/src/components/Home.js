@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Card, CardContent, Rating, Avatar } from '@mui/material'
+import { Typography, Button, Box, Card, CardContent, Rating, Avatar, Link } from '@mui/material'
+import { UserContext } from '../context/user';
 
 function Home() {
   
+    const { user, setUser } = useContext(UserContext)
     const [categories, setCategories] = useState([])
     const [spotlight, setSpotlight] = useState({})
     const [reviews, setReviews] = useState([])
@@ -35,7 +37,7 @@ function Home() {
         })
     }, [])
 
-    console.log(reviews)
+    console.log(user)
 
     return (
         <>
@@ -49,12 +51,12 @@ function Home() {
                             Regain time and ease your stress! Find qualified assistants today to fulfill your project needs.
                         </Typography>
                         <Box sx={{ marginTop: '2.5rem' }}>
-                            <Button href='/search/assistants' variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
+                            {user ? <><Button href='/search/assistants' variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                 Find An Assistant
                             </Button>
                             <Button href="/account/profile-employer/post" variant="contained" color="secondary" sx={{  borderRadius: '1.5rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>
                                 Post A Job
-                            </Button>
+                            </Button></> : <Button href='/login?signup=1' variant="contained" sx={{ borderRadius: '1.5rem', marginRight: '1rem', marginBottom: '1.5rem', padding: '.4rem 1.6rem', boxShadow: 'none' }}>Signup Today</Button>}
                         </Box>
                     </Grid>
                     <Grid xs={12} md={6}>
@@ -70,11 +72,12 @@ function Home() {
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={1} sx={{ justifyContent: 'space-between', paddingTop: '0' }}>
                             {categories.map(category => {
-                                return <Grid key={category.id} xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '24%' }}>
+                                return (
+                                    <Link key={category.id} underline='hover' href={`/search/assistants?category=${category.name}`} xs={12} sx={{ backgroundColor: '#EEF6EB', textAlign: 'center', padding: '50px 20px', borderRadius: '1.5rem', marginBottom: '20px', width: '20.5%' }}>
                                     <Typography variant="p" sx={{ fontWeight: '900' }}>
                                         {category.name}
                                     </Typography>
-                                </Grid>
+                                </Link>)
                             })}
                         </Grid>
                     </Box>
@@ -126,7 +129,7 @@ function Home() {
                                                                 <Rating name="half-rating-read" defaultValue={2.5} precision={0.1} value={review.rating} readOnly sx={{ marginRight: '0.5rem' }} /> {review.rating.toFixed(1)}
                                                             </Typography>
                                                         </Box>
-                                                        <Avatar sx={{ backgroundColor: 'red', marginLeft: 'auto'}} aria-label="assistant">
+                                                        <Avatar src={review.assistant.account.image} sx={{ marginLeft: 'auto'}} aria-label="assistant">
                                                             
                                                         </Avatar>
                                                     </Grid>

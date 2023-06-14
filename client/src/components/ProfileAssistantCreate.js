@@ -313,7 +313,7 @@ function ProfileAssistantCreate() {
                 .then(r => {
                     r.ok ? r.json().then(assistantTaskData => {
                         console.log(assistantTaskData)
-                        setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category}})
+                        setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category, assistant_task: {assistant_id: assistantTaskData.assistant_id, task_category_id: assistantTaskData.task_category_id, id: assistantTaskData.id}}})
                         history.push('/account/profile-assistant')
                     })
                     : r.json().then(error => {
@@ -503,6 +503,7 @@ function ProfileAssistantCreate() {
                             name="company_hourly_rate"
                             value={signupFormData.company_hourly_rate}
                             onChange={handleSignUpFormChange}
+                            InputProps={{ inputProps: { min: 0 } }}
                             // sx={{ width: 220 }}
                             // InputLabelProps={{
                             // shrink: true,

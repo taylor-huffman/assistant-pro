@@ -1,5 +1,5 @@
 class ReviewSerializer < ActiveModel::Serializer
-  attributes :id, :review_text, :rating, :task_agreement, :task_post, :assistant
+  attributes :id, :review_text, :rating, :task_agreement, :task_post, :assistant, :employer
 
   belongs_to :assistant
   belongs_to :employer

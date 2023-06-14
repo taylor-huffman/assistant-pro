@@ -27,11 +27,20 @@ export default function DeleteModal({ open, handleClose, user, setUser, currentD
     const handleDeleteEmployerProfile = () => {
         fetch(`/${currentDeleteModel}/${currentDeleteData.id}`, {
             method: "DELETE",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(currentDeleteData)
         })
         .then(r => {
             if (r.ok) {
                 if (currentDeleteModel === 'employers') {
                     setUser({...user, employer: null})
+                    handleClose()
+                    history.push('/account')
+                }
+                if (currentDeleteModel === 'assistants') {
+                    setUser({...user, assistant: null})
                     handleClose()
                     history.push('/account')
                 }
@@ -52,6 +61,18 @@ export default function DeleteModal({ open, handleClose, user, setUser, currentD
                     })}})
                     handleClose()
                 }
+                if (currentDeleteModel === 'accounts') {
+                    fetch('/logout', {
+                        method: 'DELETE'
+                    }).then(r => {
+                        if (r.ok) {
+                            setUser('')
+                            history.push('/')
+                        } else {
+                            r.json().then(data => console.log(data))
+                        }
+                    })
+                }
             } else {
                 return r.json().then(data => console.log(data))
             }
@@ -64,9 +85,11 @@ export default function DeleteModal({ open, handleClose, user, setUser, currentD
 
     const modelNameSwitch = () => {
         if (currentDeleteModel === 'employers') return 'employer profile'
+        if (currentDeleteModel === 'assistants') return 'assistant profile'
         if (currentDeleteModel === 'task_posts') return 'job post'
         if (currentDeleteModel === 'task_agreements') return 'agreement'
         if (currentDeleteModel === 'reviews') return 'review'
+        if (currentDeleteModel === 'accounts') return 'account'
     }
 
     return (

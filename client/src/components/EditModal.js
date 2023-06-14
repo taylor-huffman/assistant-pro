@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import { Checkbox, TextField, FormControlLabel, Rating, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Checkbox, TextField, FormControlLabel, Rating, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
 import TaskCategoriesSelect from './TaskCategoriesSelect';
 
 const style = {
@@ -68,6 +68,7 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
     const [hover, setHover] = React.useState(-1);
     const [taskPostCategoryId, setTaskPostCategoryId] = React.useState()
     // const [categoriesFetch, setCategoriesFetch] = React.useState(null)
+    const [error, setError] = React.useState('')
 
     console.log(currentEditData)
 
@@ -82,6 +83,7 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
         let value = event.target.value;
         let check = event.target.checked;
         setChecked(!checked)
+        setError('')
 
         function typeConversion() {
             if (name === 'hourly_rate' || name === 'rating') return Number(value)
@@ -121,7 +123,10 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
                 console.log(data)
                 setUser({...user, employer: {...user.employer, [currentModelEdit]: [...user.employer[currentModelEdit].filter(post => post.id !== currentEditData.id), currentEditData]}})
                 handleClose()
-            }) : r.json().then(data => console.log(data))
+                setError('')
+            }) : r.json().then(error => {
+                setError(error.error)
+            })
         })
         // console.log('model', currentModelEdit)
         // console.log('data', currentEditData)
@@ -131,6 +136,7 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
     const handleCloseOnCancel = () => {
         handleClose()
         // setChecked(false)
+        setError('')
     }
 
     // const displayData = () => {
@@ -167,6 +173,9 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
                     autoComplete="off"
                     onSubmit={handleSaveEdit}
                 >
+                {error ? error.map(err => {
+                    return <Alert key={err} severity="error" sx={{ width: '92%!important', marginBottom: '10px' }}>{err}</Alert>
+                }) : null}
                 {Object.keys(currentEditData).map(function(keyName, keyIndex) {
                     if (keyName === 'id') return null
                     if (keyName === 'employer_id') return null
@@ -204,7 +213,7 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
                     if (typeof currentEditData[keyName] === 'object') return null
                     if (typeof currentEditData[keyName] === 'boolean') return <FormControlLabel type="checkbox" onChange={handleEditFormChange} sx={{ textTransform: 'capitalize', order: '2' }} key={keyName} name={keyName} /*value={currentEditData[keyName]}*/ control={<Checkbox checked={currentEditData[keyName]} />} label={`${keyName.split('_').join(' ')}?`} />
                     if (typeof currentEditData[keyName] === 'string') return <TextField multiline rows={4} type='text' onChange={handleEditFormChange} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize' }} key={keyName} name={keyName} value={currentEditData[keyName]} /*defaultValue={currentEditData[keyName]}*/ label={keyName.split('_').join(' ')}></TextField>
-                    if (keyName === 'hourly_rate') return <TextField onChange={handleEditFormChange} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '1' }} key={keyName} name={keyName} label={keyName.split('_').join(' ')} type={typeof currentEditData[keyName]} value={currentEditData[keyName]} /*defaultValue={currentEditData[keyName]}*/></TextField>
+                    if (keyName === 'hourly_rate') return <TextField InputProps={{ inputProps: { min: 0 } }} onChange={handleEditFormChange} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '1' }} key={keyName} name={keyName} label={keyName.split('_').join(' ')} type={typeof currentEditData[keyName]} value={currentEditData[keyName]} /*defaultValue={currentEditData[keyName]}*/></TextField>
                     if (keyName === 'rating') return <Grid key={keyName} sx={{ display: 'flex' }}><Rating onChange={handleEditFormChange} onChangeActive={(event, newHover) => {
                         setHover(newHover);
                       }} name="rating" defaultValue={2.5} precision={0.1} value={currentEditData[keyName]} sx={{ marginRight: '0.5rem', paddingBottom: '0.5rem' }} /><Typography>{hover !== -1 ? hover : currentEditData[keyName]}</Typography></Grid>
