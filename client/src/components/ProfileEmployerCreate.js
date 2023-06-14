@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react'
-import { Button, TextField, Box, Typography, Tabs, Tab, Alert } from '@mui/material';
-import PropTypes from 'prop-types';
+import { Button, TextField, Box, Typography, Alert } from '@mui/material';
 import { UserContext } from '../context/user';
 import { useHistory } from 'react-router-dom'
 
 function ProfileEmployerCreate() {
 
-    const { user, setUser, isAuth, setIsAuth } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const history = useHistory()
     const [signupFormData, setSignupFormData] = useState({
         company_name: '',
@@ -54,50 +53,6 @@ function ProfileEmployerCreate() {
         })
         
         }
-
-    //   function handleLoginSubmit(e) {
-    //     e.preventDefault()
-    //     fetch(`/login`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(loginFormData)
-    //     })
-    //     .then(r => {
-    //         r.ok ? r.json().then(data => {
-    //             setUser(data)
-    //             console.log(isAuth)
-    //             setIsAuth(true)
-    //             history.push('/account')
-    //         })
-    //         : r.json().then(error => {
-    //             console.log(error)
-    //             setError(error.error.login)
-    //             setLoginFormData({
-    //                 email: '',
-    //                 password: ''
-    //             })
-    //         })
-    //     })
-    //   }
-
-    //   function handleLoginSubmit(e) {
-    //     e.preventDefault()
-    //     fetch(`/login`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(loginFormData)
-    //     })
-    //     .then(r => r.json())
-    //     .then(data => {
-    //         console.log(data)
-    //         setUser(data)
-    //         history.push('/account')
-    //     })
-    //   }
 
     return (
         <Box sx={{ marginTop: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -152,63 +107,6 @@ function ProfileEmployerCreate() {
                     </Box>
                 </Box>
         </Box>
-        // <Box sx={{ marginTop: '8vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        //     <Box
-        //         component="form"
-        //         sx={{
-        //             '& > :not(style)': { m: 1, maxWidth: '400px', width: '90%' },
-        //             display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
-        //         }}
-        //         noValidate
-        //         autoComplete="off"
-        //         onSubmit={handleSubmit}
-        //         >
-        //         <Typography variant='h1' component='h1'>
-        //             Login
-        //         </Typography>
-        //         <TextField
-        //             id="outlined-name"
-        //             label="Name"
-        //             name="name"
-        //             value={formData.name}
-        //             onChange={handleChange}
-        //             type="text"
-        //         />
-        //         <TextField
-        //             id="outlined-address"
-        //             label="Full Address"
-        //             name="address"
-        //             value={formData.address}
-        //             onChange={handleChange}
-        //             type="text"
-        //         />
-        //         <TextField
-        //             id="outlined-phone"
-        //             label="Phone Number"
-        //             name="phone"
-        //             value={formData.phone}
-        //             onChange={handleChange}
-        //             type="text"
-        //         />
-        //         <TextField
-        //             id="outlined-email"
-        //             label="Email"
-        //             name="email"
-        //             value={formData.email}
-        //             onChange={handleChange}
-        //             type="email"
-        //         />
-        //         <TextField
-        //             id="outlined-password"
-        //             label="Password"
-        //             name="password"
-        //             value={formData.password}
-        //             type="password"
-        //             onChange={handleChange}
-        //         />
-        //         <Button variant="contained" type='submit'>Submit</Button>
-        //     </Box>
-        // </Box>
     )
 }
 

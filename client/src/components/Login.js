@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, TextField, Box, Typography, Tabs, Tab, Alert, Avatar } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import { useHistory } from 'react-router-dom'
@@ -42,6 +41,7 @@ function Login() {
 
     useEffect(() => {
         checkSignupParam()
+        // eslint-disable-next-line
     }, [])
 
     const { setUser, isAuth, setIsAuth } = useContext(UserContext)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -7,10 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Stack } from '@mui/system';
-import { useHistory } from 'react-router-dom';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import { Checkbox, TextField, FormControlLabel, Rating, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
-import TaskCategoriesSelect from './TaskCategoriesSelect';
+import { Checkbox, TextField, FormControlLabel, Rating, Alert } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -23,60 +20,14 @@ const style = {
   p: 4,
 };
 
-export default function EditModal({ open, handleClose, user, setUser, currentEditData, setCurrentEditData, currentModelEdit, currentPostCategories, categoriesFetch }) {
+export default function EditModal({ open, handleClose, user, setUser, currentEditData, setCurrentEditData, currentModelEdit }) {
 
-    // useEffect(() => {
-    //     fetch('/task_categories')
-    //     .then(r => {
-    //         r.ok ? r.json().then(data => setCategoriesFetch(data))
-    //         : r.json().then(error => console.log(error))
-    //     })
-    // }, [])
-
-    useEffect(() => {
-        // fetch('/task_post_categories', {
-        //     method: "PATCH",
-        //     headers: {
-        //         "Content-type": "application/json"
-        //     },
-        //     body: JSON.stringify(currentPostCategories)
-        // })
-        console.log(currentPostCategories)
-    }, [currentEditData])
-    
-
-    const history = useHistory()
-
-    // const initialData = function() {
-    //     let array = {}
-    //     for (const keyName in currentEditData) {
-    //         if (keyName === 'id') array[keyName] = currentEditData[keyName]
-    //         // if (keyName === 'created_at') return null
-    //         // if (keyName === 'updated_at') return null
-    //         if (typeof currentEditData[keyName] === 'object') return null
-    //         if (typeof currentEditData[keyName] === 'boolean') array[keyName] = currentEditData[keyName]
-    //         if (typeof currentEditData[keyName] === 'string') array[keyName] = currentEditData[keyName]
-    //         if (typeof currentEditData[keyName] === 'number') array[keyName] = currentEditData[keyName]
-    //         // return <Typography size='small' sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize' }} key={keyName}>{currentEditData[keyName]}</Typography>
-    //     }
-    //     return array
-    // }
-
-    // const [editFormData, setEditFormData] = useState(initialData)
 
     const [checked, setChecked] = React.useState(true);
     const [hover, setHover] = React.useState(-1);
-    const [taskPostCategoryId, setTaskPostCategoryId] = React.useState()
-    // const [categoriesFetch, setCategoriesFetch] = React.useState(null)
     const [error, setError] = React.useState('')
 
     console.log(currentEditData)
-
-    // const handleCheckboxChange = (event) => {
-    //     setChecked(event.target.checked);
-    // };
-
-    // console.log(checked)
 
     function handleEditFormChange(event) {
         const name = event.target.name;
@@ -89,18 +40,8 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
             if (name === 'hourly_rate' || name === 'rating') return Number(value)
             if (name === 'task_description' || name === 'task_agreement_notes' || name === 'review_text') return value
             if (name === 'is_active' || name === 'is_completed') {
-                // setChecked(check)
                 return check
             }
-            // if (name === 'task_category') {
-            //     let catFind = categoriesFetch.find(category => {
-            //         if (value === category.name) return category
-            //     })
-            //     // console.log(catFind)
-            //     setCurrentEditData({...currentEditData, task_post_category: {...currentEditData.task_post_category, task_category_id: catFind.id}})
-            //     // setCurrentEditData({...currentEditData, task_categories: array})
-            //     return catFind
-            // }
         }
      
         setCurrentEditData({
@@ -128,22 +69,12 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
                 setError(error.error)
             })
         })
-        // console.log('model', currentModelEdit)
-        // console.log('data', currentEditData)
-        // console.log({...user, employer: {...user.employer, [currentModelEdit]: [...user.employer[currentModelEdit].filter(post => post.id !== currentEditData.id), currentEditData]}})
     }
   
     const handleCloseOnCancel = () => {
         handleClose()
-        // setChecked(false)
         setError('')
     }
-
-    // const displayData = () => {
-    //     for (const [key, value] of Object.entries(currentEditData)) {
-    //         return <Typography>{`${key}: ${value}`}</Typography>
-    //     }
-    // }
 
     return (
         <div>
@@ -183,33 +114,6 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
                     if (keyName === 'task_agreement_id') return null
                     if (keyName === 'created_at') return null
                     if (keyName === 'updated_at') return null
-                    // if (keyName === 'task_category') {
-                    //     return (
-                    //         <Box sx={{ minWidth: 120 }} key={keyName}>
-                    //             <FormControl fullWidth>
-                    //                 <InputLabel id="demo-simple-select-label">Task Category</InputLabel>
-                    //                 <Select
-                    //                 labelId="demo-simple-select-label"
-                    //                 id="demo-simple-select"
-                    //                 name={keyName}
-                    //                 value={currentEditData[keyName].name}
-                    //                 label={`${keyName.split('_').join(' ')}?`}
-                    //                 onChange={handleEditFormChange}
-                    //                 >
-                    //                 {categoriesFetch.map((category) => (
-                    //                     <MenuItem
-                    //                     key={category.name}
-                    //                     value={category.name}
-                    //                     //   style={getStyles(category.name, personName, theme)}
-                    //                     >
-                    //                     {category.name}
-                    //                     </MenuItem>
-                    //                 ))}
-                    //                 </Select>
-                    //             </FormControl>
-                    //         </Box>
-                    //     // <TaskCategoriesSelect key={keyName} currentSelectedCategories={currentEditData[keyName]} currentEditData={currentEditData} setCurrentEditData={setCurrentEditData} currentPostCategories={currentPostCategories} setCurrentPostCategories={setCurrentPostCategories} />
-                    // )}
                     if (typeof currentEditData[keyName] === 'object') return null
                     if (typeof currentEditData[keyName] === 'boolean') return <FormControlLabel type="checkbox" onChange={handleEditFormChange} sx={{ textTransform: 'capitalize', order: '2' }} key={keyName} name={keyName} /*value={currentEditData[keyName]}*/ control={<Checkbox checked={currentEditData[keyName]} />} label={`${keyName.split('_').join(' ')}?`} />
                     if (typeof currentEditData[keyName] === 'string') return <TextField multiline rows={4} type='text' onChange={handleEditFormChange} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize' }} key={keyName} name={keyName} value={currentEditData[keyName]} /*defaultValue={currentEditData[keyName]}*/ label={keyName.split('_').join(' ')}></TextField>

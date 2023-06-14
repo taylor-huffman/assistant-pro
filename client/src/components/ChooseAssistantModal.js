@@ -7,10 +7,9 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Rating from '@mui/material/Rating';
-import { FormControl, FormControlLabel, Select, InputLabel, MenuItem, TextField, Alert } from '@mui/material';
+import { FormControl, Select, InputLabel, MenuItem, TextField, Alert } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 const style = {
   position: 'absolute',
@@ -54,14 +53,6 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
 
     function handleSignupSubmit(e) {
         e.preventDefault()
-        // console.log({
-        //     assistant_id: assistant.id,
-        //     employer_id: user.employer.id,
-        //     hourly_rate: assistant.company_hourly_rate,
-        //     task_agreement_notes: signupFormData.task_agreement_notes,
-        //     is_completed: false,
-        //     task_post_id: selectedTask
-        // })
         fetch(`/task_agreements`, {
             method: 'POST',
             headers: {
@@ -114,52 +105,6 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
         // setErrors([])
     };
 
-    // const history = useHistory()
-
-    // const handleDeleteEmployerProfile = () => {
-    //     fetch(`/${currentDeleteModel}/${currentDeleteData.id}`, {
-    //         method: "DELETE",
-    //     })
-    //     .then(r => {
-    //         if (r.ok) {
-    //             if (currentDeleteModel === 'employers') {
-    //                 setUser({...user, employer: null})
-    //                 handleClose()
-    //                 history.push('/account')
-    //             }
-    //             if (currentDeleteModel === 'task_posts') {
-    //                 setUser({...user, employer: {...user.employer, task_posts: [...user.employer.task_posts.filter(post => post.id !== currentDeleteData.id)]}})
-    //                 handleClose()
-    //             }
-    //             if (currentDeleteModel === 'task_agreements') {
-    //                 setUser({...user, employer: {...user.employer, task_agreements: [...user.employer.task_agreements.filter(agreement => agreement.id !== currentDeleteData.id)]}})
-    //                 handleClose()
-    //             }
-    //             if (currentDeleteModel === 'reviews') {
-    //                 setUser({...user, employer: {...user.employer, reviews: [...user.employer.reviews.filter(review => review.id !== currentDeleteData.id)], task_agreements: user.employer.task_agreements.map(agreement => {
-    //                     if (agreement.review && agreement.review.id === currentDeleteData.id) {
-    //                         console.log({...agreement, review: null})
-    //                         return {...agreement, review: null}
-    //                     } else return agreement
-    //                 })}})
-    //                 handleClose()
-    //             }
-    //         } else {
-    //             return r.json().then(data => console.log(data))
-    //         }
-    //     })
-    // }
-  
-    // const handleCloseOnCancel = () => {
-    //     handleClose()
-    // }
-
-    // const modelNameSwitch = () => {
-    //     if (currentDeleteModel === 'task_posts') return 'Job Post'
-    //     if (currentDeleteModel === 'task_agreements') return 'Agreement'
-    //     if (currentDeleteModel === 'reviews') return 'Review'
-    // }
-
     return (
         <div>
         <Modal
@@ -175,20 +120,6 @@ export default function ChooseAssistantModal({ open, handleClose, user, setUser,
         >
             <Fade in={open}>
             <Box sx={style}>
-                {/* <Typography id="transition-modal-title" variant="h6" component="h2" color='error' sx={{ display: 'flex', alignItems: 'center' }}>
-                    <WarningAmberOutlinedIcon sx={{ marginRight: '5px' }} /> Warning!
-                </Typography>
-                <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                {`Are you sure you want to delete your ${modelNameSwitch()}? This action is permanent and irreversible.`}
-                </Typography>
-                <Stack spacing={2} direction="row" sx={{ marginTop: '30px' }}>
-                    <Button variant='contained' color='error' onClick={handleDeleteEmployerProfile}>
-                        {`Delete ${modelNameSwitch()}`}
-                    </Button>
-                    <Button variant='text' sx={{ color: 'black', '&:hover': { backgroundColor: '#eeeeee' } }} onClick={handleCloseOnCancel}>
-                        Cancel
-                    </Button>
-                </Stack> */}
                 <Typography sx={{ fontWeight: 'bold' }}>{assistant.company_name}</Typography>
                 <Typography>{assistant.task_category ? assistant.task_category.name : null}</Typography>
                 <Typography>{`$${assistant.company_hourly_rate}/hr`}<Rating name="average_rating" size='small' precision={0.1} value={assistant.average_rating} readOnly sx={{ marginLeft: '10px', marginRight: '10px' }} />{assistant.average_rating}</Typography>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -7,10 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { Stack } from '@mui/system';
-// import { useHistory } from 'react-router-dom';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import { Checkbox, TextField, FormControlLabel, Rating, FormControl, InputLabel, Select, MenuItem, Alert } from '@mui/material';
-import TaskCategoriesSelect from './TaskCategoriesSelect';
+import { TextField, Rating, Alert } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -23,82 +20,25 @@ const style = {
   p: 4,
 };
 
-export default function ReviewModal({ open, handleClose, user, setUser, currentAgreementData, setCurrentAgreementData }) {
+export default function ReviewModal({ open, handleClose, user, setUser, currentAgreementData }) {
 
     console.log(currentAgreementData)
-
-    // useEffect(() => {
-    //     fetch('/task_categories')
-    //     .then(r => {
-    //         r.ok ? r.json().then(data => setCategoriesFetch(data))
-    //         : r.json().then(error => console.log(error))
-    //     })
-    // }, [])
-
-    // useEffect(() => {
-    //     // fetch('/task_post_categories', {
-    //     //     method: "PATCH",
-    //     //     headers: {
-    //     //         "Content-type": "application/json"
-    //     //     },
-    //     //     body: JSON.stringify(currentPostCategories)
-    //     // })
-    //     console.log(currentPostCategories)
-    // }, [currentAgreementData])
-    
-
-    // const history = useHistory()
-
-    // const initialData = function() {
-    //     let array = {}
-    //     for (const keyName in currentAgreementData) {
-    //         if (keyName === 'id') array[keyName] = currentAgreementData[keyName]
-    //         // if (keyName === 'created_at') return null
-    //         // if (keyName === 'updated_at') return null
-    //         if (typeof currentAgreementData[keyName] === 'object') return null
-    //         if (typeof currentAgreementData[keyName] === 'boolean') array[keyName] = currentAgreementData[keyName]
-    //         if (typeof currentAgreementData[keyName] === 'string') array[keyName] = currentAgreementData[keyName]
-    //         if (typeof currentAgreementData[keyName] === 'number') array[keyName] = currentAgreementData[keyName]
-    //         // return <Typography size='small' sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize' }} key={keyName}>{currentAgreementData[keyName]}</Typography>
-    //     }
-    //     return array
-    // }
-
-    // const [editFormData, setEditFormData] = useState(initialData)
 
     const [checked, setChecked] = React.useState(true);
     const [hover, setHover] = React.useState(-1);
     const [rating, setRating] = React.useState(2.5)
     const [reviewText, setReviewText] = React.useState('')
-    const [taskPostCategoryId, setTaskPostCategoryId] = React.useState()
-    // const [categoriesFetch, setCategoriesFetch] = React.useState(null)
     const [error, setError] = useState('')
 
     console.log(user)
 
-    // const handleCheckboxChange = (event) => {
-    //     setChecked(event.target.checked);
-    // };
-
-    // console.log(checked)
-
     function handleEditFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
-        let check = event.target.checked;
         setChecked(!checked)
 
         function typeConversion() {
             if (name === 'rating') return Number(value)
-            // if (name === 'task_category') {
-            //     let catFind = categoriesFetch.find(category => {
-            //         if (value === category.name) return category
-            //     })
-            //     // console.log(catFind)
-            //     setCurrentAgreementData({...currentAgreementData, task_post_category: {...currentAgreementData.task_post_category, task_category_id: catFind.id}})
-            //     // setCurrentAgreementData({...currentAgreementData, task_categories: array})
-            //     return catFind
-            // }
         }
      
         setRating(typeConversion());
@@ -141,16 +81,12 @@ export default function ReviewModal({ open, handleClose, user, setUser, currentA
                 setError(error.error)
             })
         })
-        // console.log('model', currentModelEdit)
-        // console.log('data', currentAgreementData)
-        // console.log({...user, employer: {...user.employer, [currentModelEdit]: [...user.employer[currentModelEdit].filter(post => post.id !== currentAgreementData.id), currentAgreementData]}})
     }
   
     const handleCloseOnCancel = () => {
         setRating(2.5)
         setReviewText('')
         handleClose()
-        // setChecked(false)
         setError('')
     }
 
@@ -160,12 +96,6 @@ export default function ReviewModal({ open, handleClose, user, setUser, currentA
         handleClose()
         setError('')
     }
-
-    // const displayData = () => {
-    //     for (const [key, value] of Object.entries(currentAgreementData)) {
-    //         return <Typography>{`${key}: ${value}`}</Typography>
-    //     }
-    // }
 
     return (
         <div>
