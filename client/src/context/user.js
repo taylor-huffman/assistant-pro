@@ -12,13 +12,13 @@ function UserProvider({ children }) {
         fetch('/auth')
         .then(r => {
             if (r.ok) {
-                r.json().then(user => {
+                return r.json().then(user => {
                     setUser(user)
                     setIsAuth(true)
                     setIsLoading(false)
                 })
             } else {
-                r.json().then(error => {
+                return r.json().then(error => {
                     console.log(error)
                     setIsLoading(false)
                 })

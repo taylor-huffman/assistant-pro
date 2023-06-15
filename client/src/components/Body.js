@@ -33,6 +33,8 @@ function Body() {
             </div>
         </div>
 
+        // if (!user) return <Login />
+
     return (
         <>
             <Switch>
