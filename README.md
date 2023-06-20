@@ -231,6 +231,7 @@ Images from https://canva.com
 
 ## Known Deficiences
 - I'm currently still in the process of building functionality on the assistant side of the app. There will be more to come on that soon, as well more fully fleshed out features all around.
+- Be aware that styling and layout has yet to be fully optimized for mobile.
 
 ## Contact Me For Questions
 Have any questions? Feel free to shoot me an email: [taylor@crucialartists.com](mailto:taylor@crucialartists.com)
