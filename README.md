@@ -24,7 +24,7 @@ Things you may want to cover:
 * ... -->
 
 
-# Purrfect Adventures
+# AssistantPro.co
 
 ## Description
 AssistantPro.co is a platform that brings together Employers and Assistants, allowing Employers to post tasks they need help with and choose an assistant to fulfill those tasks.
