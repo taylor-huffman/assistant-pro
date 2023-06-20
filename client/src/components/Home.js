@@ -6,7 +6,7 @@ import { UserContext } from '../context/user';
 
 function Home() {
   
-    const { user, setUser } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const [categories, setCategories] = useState([])
     const [spotlight, setSpotlight] = useState({})
     const [reviews, setReviews] = useState([])
@@ -36,8 +36,6 @@ function Home() {
             setReviews(firstTwo)
         })
     }, [])
-
-    console.log(user)
 
     return (
         <>

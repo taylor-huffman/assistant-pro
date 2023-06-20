@@ -44,7 +44,7 @@ function Login() {
         // eslint-disable-next-line
     }, [])
 
-    const { setUser, isAuth, setIsAuth } = useContext(UserContext)
+    const { setUser, setIsAuth } = useContext(UserContext)
     const history = useHistory()
     const [value, setValue] = useState(0);
     const [signupFormData, setSignupFormData] = useState({
@@ -113,7 +113,6 @@ function Login() {
         })
         .then(r => {
             r.ok ? r.json().then(data => {
-                console.log(data)
                 setUser(data)
                 setIsAuth(true)
                 history.push('/account')
@@ -145,9 +144,7 @@ function Login() {
         .then(r => {
             r.ok ? r.json().then(data => {
                 setUser(data)
-                console.log(isAuth)
                 setIsAuth(true)
-                console.log(isAuth)
                 history.push('/account')
             })
             : r.json().then(error => {
@@ -179,7 +176,6 @@ function Login() {
             // // }
             // let image = URL.createObjectURL(e.target.files[0])
             // setProfilePicture(image)
-            console.log(e.target.files[0])
             setProfilePicture(e.target.files[0])
         }
 
@@ -283,7 +279,7 @@ function Login() {
                         />
                         <TextField
                             id="outlined-phone"
-                            label="Phone Number"
+                            label="Phone (xxx-xxx-xxxx)"
                             name="phone"
                             value={signupFormData.phone}
                             onChange={handleSignUpFormChange}

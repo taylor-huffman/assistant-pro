@@ -55,7 +55,6 @@ export default function DeleteModal({ open, handleClose, user, setUser, currentD
                 if (currentDeleteModel === 'reviews') {
                     setUser({...user, employer: {...user.employer, reviews: [...user.employer.reviews.filter(review => review.id !== currentDeleteData.id)], task_agreements: user.employer.task_agreements.map(agreement => {
                         if (agreement.review && agreement.review.id === currentDeleteData.id) {
-                            console.log({...agreement, review: null})
                             return {...agreement, review: null}
                         } else return agreement
                     })}})
@@ -69,12 +68,12 @@ export default function DeleteModal({ open, handleClose, user, setUser, currentD
                             setUser('')
                             history.push('/')
                         } else {
-                            r.json().then(data => console.log(data))
+                            r.json().then(error => console.log(error))
                         }
                     })
                 }
             } else {
-                return r.json().then(data => console.log(data))
+                return r.json().then(error => console.log(error))
             }
         })
     }

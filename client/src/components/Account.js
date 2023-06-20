@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Box, Divider, Link, TextField, Button } from '@mui/material'
+import { Typography, Box, Divider, Link, TextField, Button, Alert } from '@mui/material'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -19,34 +19,39 @@ function Account() {
     const [open, setOpen] = React.useState(false);
     const [currentDeleteData, setCurrentDeleteData] = React.useState({})
     const [currentDeleteModel, setCurrentDeleteModel] = React.useState('')
+    const [error, setError] = useState('')
 
     const handleChangeEditStatus = () => {
         setEditStatus(!editStatus)
     }
 
     const handleEditInfo = (name, email, address, phone) => {
-        console.log(name, email, address, phone)
         setName(name)
         setEmail(email)
         setAddress(address)
         setPhone(phone)
         setEditStatus(!editStatus)
+        setError('')
     }
 
     const handleEditNameChange = (e) => {
         setName(e.target.value)
+        setError('')
     }
 
     const handleEditEmailChange = (e) => {
         setEmail(e.target.value)
+        setError('')
     }
 
     const handleEditAddressChange = (e) => {
         setAddress(e.target.value)
+        setError('')
     }
 
     const handleEditPhoneChange = (e) => {
         setPhone(e.target.value)
+        setError('')
     }
 
     const handleOpenDeleteModal = (data, model) => {
@@ -74,9 +79,11 @@ function Account() {
             r.ok ? r.json().then(data => {
                 setUser(data)
                 handleChangeEditStatus()
+                setError('')
             })
             : r.json().then(error => {
                 console.log(error)
+                setError(error.error)
             })
         })
     }
@@ -157,6 +164,9 @@ function Account() {
                                             <CloseOutlinedIcon onClick={() => handleEditInfo(user.name, user.email, user.address, user.phone)} /></>
                                             : <EditOutlinedIcon onClick={() => handleEditInfo(user.name, user.email, user.address, user.phone)} />}
                                     </Grid>
+                                    {error ? error.map(err => {
+                                        return <Alert key={err} severity="error" sx={{ width: '92%!important' }}>{err}</Alert>
+                                    }) : null}
                                     <Box sx={{ flexGrow: 1, padding: '30px 0 0' }}>
                                         <Typography variant='p' component="p" sx={{ paddingTop: '0px', fontFamily: 'Poppins', fontWeight: "500", textDecoration: 'underline'  }}>
                                             Name

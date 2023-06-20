@@ -22,15 +22,12 @@ const style = {
 
 export default function ReviewModal({ open, handleClose, user, setUser, currentAgreementData }) {
 
-    console.log(currentAgreementData)
 
     const [checked, setChecked] = React.useState(true);
     const [hover, setHover] = React.useState(-1);
     const [rating, setRating] = React.useState(2.5)
     const [reviewText, setReviewText] = React.useState('')
     const [error, setError] = useState('')
-
-    console.log(user)
 
     function handleEditFormChange(event) {
         const name = event.target.name;
@@ -66,10 +63,8 @@ export default function ReviewModal({ open, handleClose, user, setUser, currentA
         })
         .then(r => {
             r.ok ? r.json().then(data => {
-                console.log(data)
                 setUser({...user, employer: {...user.employer, reviews: [...user.employer.reviews, data], task_agreements: [...user.employer.task_agreements.map(a => {
                     if (a.id === currentAgreementData.id) {
-                        console.log({...a, review: data})
                         let updatedAgreement = {...a, review: data}
                         return updatedAgreement
                     } else {

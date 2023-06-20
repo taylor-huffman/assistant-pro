@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from 'react'
 import Container from '@mui/material/Container'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
-import { Typography, Button, Box, Rating, Avatar, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, Tab, Link, TextField, FormControl, InputLabel, Select, MenuItem, FormLabel, FormGroup, FormControlLabel, Checkbox, FormHelperText, Slider, Input, InputAdornment } from '@mui/material'
+import { Typography, Button, Box, Rating, Avatar, Divider, FormControl, FormGroup, FormControlLabel, Checkbox, Slider, Input, InputAdornment, Skeleton } from '@mui/material'
 import SearchIcon from '@mui/icons-material/SearchOutlined'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
-import PropTypes from 'prop-types';
+// import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+// import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+// import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+// import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
+// import PropTypes from 'prop-types';
 import { UserContext } from '../context/user';
 import DisplayModal from './DisplayModal';
 import ChooseAssistantModal from './ChooseAssistantModal'
@@ -46,35 +46,40 @@ import ChooseAssistantModal from './ChooseAssistantModal'
     //     };
     //   }
 
+    // function valuetext(value) {
+    //     return `${value}°C`;
+    //   }
+
 function SearchAssistants() {
     
     // const [account, setAccount] = useState({})
     // const [assistant, setAssistant] = useState([])
     const { user, setUser } = useContext(UserContext)
-    const [taskPostValue, setTaskPostValue] = React.useState(0)
-    const [agreementValue, setAgreementValue] = React.useState(0);
+    // const [taskPostValue, setTaskPostValue] = React.useState(0)
+    // const [agreementValue, setAgreementValue] = React.useState(0);
     const [open, setOpen] = React.useState(false);
-    const [editStatus, setEditStatus] = React.useState(false)
-    const [editCompanyNameInput, setEditCompanyNameInput] = React.useState('')
-    const [editCompanyBioInput, setEditCompanyBioInput] = React.useState('')
-    const [editCompanyStartDateInput, setEditCompanyStartDateInput] = React.useState('')
-    const [editCompanyHourlyRateInput, setEditCompanyHourlyRateInput] = React.useState('')
+    // const [editStatus, setEditStatus] = React.useState(false)
+    // const [editCompanyNameInput, setEditCompanyNameInput] = React.useState('')
+    // const [editCompanyBioInput, setEditCompanyBioInput] = React.useState('')
+    // const [editCompanyStartDateInput, setEditCompanyStartDateInput] = React.useState('')
+    // const [editCompanyHourlyRateInput, setEditCompanyHourlyRateInput] = React.useState('')
     // const [editCompanyCategoryInput, setEditCompanyCategoryInput] = React.useState({})
-    const [currentCategoryObject, setCurrentCategoryObject] = React.useState({})
-    const [currentDeleteData, setCurrentDeleteData] = React.useState({})
-    const [currentDeleteModel, setCurrentDeleteModel] = React.useState('')
-    const [categoriesFetch, setCategoriesFetch] = React.useState([])
+    // const [currentCategoryObject, setCurrentCategoryObject] = React.useState({})
+    // const [currentDeleteData, setCurrentDeleteData] = React.useState({})
+    // const [currentDeleteModel, setCurrentDeleteModel] = React.useState('')
+    // const [categoriesFetch, setCategoriesFetch] = React.useState([])
     const [openDisplayModal, setOpenDisplayModal] = React.useState(false)
     const [currentDisplayData, setCurrentDisplayData] = React.useState({})
     const [currentDisplayModel, setCurrentDisplayModel] = React.useState('')
     const [assistants, setAssistants] = React.useState([])
-    const handleOpenDisplay = () => setOpenDisplayModal(true)
+    // const handleOpenDisplay = () => setOpenDisplayModal(true)
     const handleCloseDisplay = () => setOpenDisplayModal(false)
     const handleClose = () => setOpen(false);
     const [currentAssistant, setCurrentAssistant] = React.useState({})
 
     useEffect(() => {
         checkSignupParam()
+        // eslint-disable-next-line
     }, [])
 
     const urlParams = new URL(window.location.href).searchParams;
@@ -102,10 +107,14 @@ function SearchAssistants() {
     const [categoryState, setCategoryState] = React.useState({});
     const [ratingValue, setRatingValue] = React.useState(0);
     const [ratingHover, setRatingHover] = React.useState(-1);
-    const [hourlyRateValue, setHourlyRateValue] = React.useState(0);
+    const [hourlyRateValue, setHourlyRateValue] = React.useState([0, 150]);
     const [searchValue, setSearchValue] = React.useState('')
+    const [assistantsLoaded, setAssistantsLoaded] = React.useState(false)
 
-    console.log(searchValue)
+    const handleRangeChange = (event, newValue) => {
+        setHourlyRateValue(newValue);
+      };
+
 
     const marks = [
         {
@@ -118,7 +127,7 @@ function SearchAssistants() {
         },
       ];
 
-    const filteredAssistants = assistants.filter(assistant => {
+    const filteredAssistants = assistants.filter(assistant => assistant.account.id !== user.id).filter(assistant => {
         if((Object.keys(categoryState).filter(keyName => categoryState[keyName] === true)).length > 0) {
             return (Object.keys(categoryState).filter(keyName => categoryState[keyName] === true)).includes(assistant.task_category.name)
         } else return assistant
@@ -126,7 +135,7 @@ function SearchAssistants() {
         if(ratingValue) {
             return assistant.average_rating >= ratingValue
         } else return assistant
-    }).filter(assistant => assistant.company_hourly_rate >= hourlyRateValue).filter(assistant => {
+    }).filter(assistant => assistant.company_hourly_rate >= hourlyRateValue[0] && assistant.company_hourly_rate <= hourlyRateValue[1]).filter(assistant => {
         if(searchValue) {
             return assistant.task_category.name.toUpperCase().includes(searchValue.toUpperCase()) || assistant.company_name.toUpperCase().includes(searchValue.toUpperCase())
         } else return assistant
@@ -138,7 +147,6 @@ function SearchAssistants() {
     //     }
     // }))
 
-    console.log(filteredAssistants)
 
     // catToBoolean()
 
@@ -158,8 +166,8 @@ function SearchAssistants() {
         fetch('/assistants')
         .then(r => {
             r.ok ? r.json().then(data => {
-                console.log(data)
                 setAssistants(data)
+                setAssistantsLoaded(true)
             })
             : r.json().then(error => console.log(error))
         })
@@ -169,11 +177,10 @@ function SearchAssistants() {
         fetch('/task_categories')
         .then(r => {
             r.ok ? r.json().then(data => {
-                setCategoriesFetch(data)
+                // setCategoriesFetch(data)
                 let obj = {}
                 for (let category of data) {
                     obj[category.name] = false
-                    // console.log(obj)
                 }
                 setCategoryState(obj)
             })
@@ -181,87 +188,84 @@ function SearchAssistants() {
         })
     }, [])
 
-    const handleAgreementChange = (event, newValue) => {
-        setAgreementValue(newValue);
-    };
+    // const handleAgreementChange = (event, newValue) => {
+    //     setAgreementValue(newValue);
+    // };
 
-    const handleTaskPostChange = (event, newValue) => {
-        setTaskPostValue(newValue);
-    };
+    // const handleTaskPostChange = (event, newValue) => {
+    //     setTaskPostValue(newValue);
+    // };
 
-    const handleOpenDeleteModal = (data, model) => {
-        setCurrentDeleteData(data)
-        setCurrentDeleteModel(model)
-        setOpen(true)
-    }
+    // const handleOpenDeleteModal = (data, model) => {
+    //     setCurrentDeleteData(data)
+    //     setCurrentDeleteModel(model)
+    //     setOpen(true)
+    // }
 
-    const handleChangeEditStatus = () => {
-        setEditStatus(!editStatus)
-    }
+    // const handleChangeEditStatus = () => {
+    //     setEditStatus(!editStatus)
+    // }
 
-    const handleEditNameChange = (e) => {
-        setEditCompanyNameInput(e.target.value)
-    }
+    // const handleEditNameChange = (e) => {
+    //     setEditCompanyNameInput(e.target.value)
+    // }
 
-    const handleEditBioChange = (e) => {
-        setEditCompanyBioInput(e.target.value)
-    }
+    // const handleEditBioChange = (e) => {
+    //     setEditCompanyBioInput(e.target.value)
+    // }
 
-    const handleEditStartDateChange = (e) => {
-        setEditCompanyStartDateInput(e.target.value)
-    }
+    // const handleEditStartDateChange = (e) => {
+    //     setEditCompanyStartDateInput(e.target.value)
+    // }
 
-    const handleEditHourlyRateChange = (e) => {
-        setEditCompanyHourlyRateInput(e.target.value)
-    }
+    // const handleEditHourlyRateChange = (e) => {
+    //     setEditCompanyHourlyRateInput(e.target.value)
+    // }
 
     // const handleEditCompanyCategoryChange = (e) => {
     //     setEditCompanyCategoryInput(e.target.value)
     //     setCurrentCategoryObject(categoriesFetch.filter(category => category.name !== e.target.value))
     // }
 
-    const handleOpenDisplayModalOnClick = (data, model) => {
-        handleOpenDisplay()
-        setCurrentDisplayData(data)
-        setCurrentDisplayModel(model)
-        // console.log('open')
-    }
+    // const handleOpenDisplayModalOnClick = (data, model) => {
+    //     handleOpenDisplay()
+    //     setCurrentDisplayData(data)
+    //     setCurrentDisplayModel(model)
+    // }
 
-    const handleEditInfo = (name, bio, startDate, hourlyRate, category) => {
-        console.log(name, bio, startDate, hourlyRate, category)
-        setEditCompanyNameInput(name)
-        setEditCompanyBioInput(bio)
-        setEditCompanyStartDateInput(startDate)
-        setEditCompanyHourlyRateInput(hourlyRate)
-        // setEditCompanyCategoryInput(category)
-        setEditStatus(!editStatus)
-    }
+    // const handleEditInfo = (name, bio, startDate, hourlyRate, category) => {
+    //     setEditCompanyNameInput(name)
+    //     setEditCompanyBioInput(bio)
+    //     setEditCompanyStartDateInput(startDate)
+    //     setEditCompanyHourlyRateInput(hourlyRate)
+    //     // setEditCompanyCategoryInput(category)
+    //     setEditStatus(!editStatus)
+    // }
 
-    const handleSaveEdit = () => {
-        fetch(`/assistants/${user.assistant.id}`, {
-            method: 'PATCH',
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify({
-                ...user.assistant,
-                company_name: editCompanyNameInput,
-                company_bio: editCompanyBioInput,
-                company_start_date: editCompanyStartDateInput,
-                company_hourly_rate: editCompanyHourlyRateInput,
-                // task_category: {currentCategoryObject}
-            })
-        })
-        .then(r => {
-            if (r.ok) {
-                r.json().then(data => {
-                    console.log(data)
-                    setUser({...user, assistant: data})
-                    handleChangeEditStatus()
-                })
-            }
-        })
-    }
+    // const handleSaveEdit = () => {
+    //     fetch(`/assistants/${user.assistant.id}`, {
+    //         method: 'PATCH',
+    //         headers: {
+    //             "Content-type": "application/json"
+    //         },
+    //         body: JSON.stringify({
+    //             ...user.assistant,
+    //             company_name: editCompanyNameInput,
+    //             company_bio: editCompanyBioInput,
+    //             company_start_date: editCompanyStartDateInput,
+    //             company_hourly_rate: editCompanyHourlyRateInput,
+    //             // task_category: {currentCategoryObject}
+    //         })
+    //     })
+    //     .then(r => {
+    //         if (r.ok) {
+    //             r.json().then(data => {
+    //                 setUser({...user, assistant: data})
+    //                 handleChangeEditStatus()
+    //             })
+    //         }
+    //     })
+    // }
 
     // useEffect(() => {
     //     fetch('/accounts/1')
@@ -278,12 +282,53 @@ function SearchAssistants() {
     //         setAssistant(assistant)
     //     })
     // }, [])
-    console.log(user)
 
     const handleOpenChooseAssistant = (assistant) => {
         setOpen(true)
         setCurrentAssistant(assistant)
     }
+
+      const skeleton = <>
+        <Grid sx={{ width: '100%', display: 'flex' }}>
+            <Grid item>
+                <Skeleton variant="circular" width={80} height={80} />
+            </Grid>
+            <Grid item xs={12}>
+                <Box sx={{ display: 'flex' }}>
+                    <Skeleton variant="text" width='100%' sx={{ fontSize: '2rem' }} />
+                </Box>
+                <Box sx={{ marginLeft: 'auto' }}>
+                <Skeleton variant="rectangular" width="100%" height={100} />
+                </Box>
+            </Grid>
+        </Grid>
+        <Grid sx={{ width: '100%', display: 'flex' }}>
+            <Grid item>
+                <Skeleton variant="circular" width={80} height={80} />
+            </Grid>
+            <Grid item xs={12}>
+                <Box sx={{ display: 'flex' }}>
+                    <Skeleton variant="text" width='100%' sx={{ fontSize: '2rem' }} />
+                </Box>
+                <Box sx={{ marginLeft: 'auto' }}>
+                <Skeleton variant="rectangular" width="100%" height={100} />
+                </Box>
+            </Grid>
+        </Grid>
+        <Grid sx={{ width: '100%', display: 'flex' }}>
+            <Grid item>
+                <Skeleton variant="circular" width={80} height={80} />
+            </Grid>
+            <Grid item xs={12}>
+                <Box sx={{ display: 'flex' }}>
+                    <Skeleton variant="text" width='100%' sx={{ fontSize: '2rem' }} />
+                </Box>
+                <Box sx={{ marginLeft: 'auto' }}>
+                <Skeleton variant="rectangular" width="100%" height={100} />
+                </Box>
+            </Grid>
+        </Grid>
+      </>
 
     return (
         <>
@@ -357,13 +402,22 @@ function SearchAssistants() {
                                 </Box>
                                 <Box sx={{ marginTop: '40px' }}>
                                     <Typography>Hourly Rate</Typography>
-                                    <Box sx={{ display: 'flex' }}>
-                                    <Slider sx={{ marginTop: '10px' }} aria-label="Hourly-Rate" value={hourlyRateValue} onChange={(event, newValue) => {
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    {/* <Slider sx={{ marginTop: '10px' }} aria-label="Hourly-Rate" value={hourlyRateValue} onChange={(event, newValue) => {
                                         setHourlyRateValue(newValue);
                                     }}
                                     valueLabelDisplay="auto"
                                     max={150}
-                                    marks={marks} />
+                                    marks={marks} /> */}
+                                    <Slider
+                                        sx={{ marginTop: '10px' }}
+                                        getAriaLabel={() => 'Hourly-Rate'}
+                                        value={hourlyRateValue}
+                                        onChange={handleRangeChange}
+                                        valueLabelDisplay="auto"
+                                        max={150}
+                                        marks={marks}
+                                    />
                                     {/* <Typography sx={{ marginLeft: '10px' }}>{ratingHover !== -1 ? ratingHover : ratingValue}</Typography> */}
                                     </Box>
                                 </Box>
@@ -408,7 +462,7 @@ function SearchAssistants() {
                             </Box>
                             <Divider variant="middle" />
                             <Grid item xs={12} sx={{ padding: '0' }}>
-                                {filteredAssistants.length > 0 ? filteredAssistants.map(assistant => {
+                                {assistantsLoaded ? filteredAssistants.length > 0 ? filteredAssistants.map(assistant => {
                                     return <Grid key={assistant.id} sx={{ width: '100%', display: 'flex' }}>
                                     <Grid item>
                                         <Avatar src={assistant.account.image} sx={{ minWidth: '80px', minHeight: '80px' }} />
@@ -436,14 +490,14 @@ function SearchAssistants() {
                                         </Box>
                                     </Grid>
                                 </Grid>
-                                }) : <Grid item xs={12} sx={{ padding: '50px' }}><Typography>No results. Please adjust your filters.</Typography></Grid>}
+                                }) : <Grid item xs={12} sx={{ padding: '50px' }}><Typography>No results. Please adjust your filters.</Typography></Grid> : skeleton}
                             </Grid>
                         </Grid>
                     </Grid>
                 </Box>
                 <DisplayModal open={openDisplayModal} handleClose={handleCloseDisplay} user={user} setUser={setUser} currentDisplayData={currentDisplayData} setCurrentDisplayData={setCurrentDisplayData} currentDisplayModel={currentDisplayModel} setCurrentDisplayModel={setCurrentDisplayModel} />
             </Container>
-            <ChooseAssistantModal open={open} handleClose={handleClose} user={user} setUser={setUser} currentDeleteData={currentDeleteData} currentDeleteModel={currentDeleteModel} assistant={currentAssistant} />
+            <ChooseAssistantModal open={open} handleClose={handleClose} user={user} setUser={setUser} assistant={currentAssistant} />
         </>
     )
 }

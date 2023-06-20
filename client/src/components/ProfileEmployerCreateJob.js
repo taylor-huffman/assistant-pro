@@ -45,10 +45,6 @@ function ProfileEmployerCreateJob() {
         });
     }
 
-    
-
-    console.log(signupFormData)
-    console.log(signupFormSelect)
 
       function handleSignupSubmit(e) {
         e.preventDefault()
@@ -62,7 +58,6 @@ function ProfileEmployerCreateJob() {
         .then(r => {
             if (r.ok) {
                 return r.json().then(post => {
-                    console.log(post)
         
                     function findCatObject() {
                         let obj = categoriesFetch.filter(category => category.name === signupFormSelect.task_category)
@@ -78,7 +73,6 @@ function ProfileEmployerCreateJob() {
                     })
                     .then(r => r.json())
                     .then(taskPostCategory => {
-                        console.log(taskPostCategory)
         
                         let postWithCategories = {...post, task_category: findCatObject(), task_post_category: taskPostCategory}
         
@@ -95,8 +89,6 @@ function ProfileEmployerCreateJob() {
         })
         
       }
-
-      console.log(user)
 
     
     return (

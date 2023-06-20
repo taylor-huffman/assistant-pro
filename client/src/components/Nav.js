@@ -50,7 +50,7 @@ const Nav = () => {
                 setIsAuth(false)
                 history.push('/login')
             } else {
-                r.json().then(data => console.log(data))
+                r.json().then(error => console.log(error))
             }
         })
     }

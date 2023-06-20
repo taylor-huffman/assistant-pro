@@ -49,9 +49,6 @@ function ProfileAssistantCreate() {
         });
     }
 
-    
-    console.log(signupFormData)
-    console.log(signupFormSelect)
 
     function handleSignupSubmit(e) {
         e.preventDefault()
@@ -74,7 +71,6 @@ function ProfileAssistantCreate() {
                 })
                 .then(r => {
                     r.ok ? r.json().then(assistantTaskData => {
-                        console.log(assistantTaskData)
                         setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category, assistant_task: {assistant_id: assistantTaskData.assistant_id, task_category_id: assistantTaskData.task_category_id, id: assistantTaskData.id}}})
                         history.push('/account/profile-assistant')
                     })
@@ -109,7 +105,6 @@ function ProfileAssistantCreate() {
         })
       }
 
-      console.log(error)
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;

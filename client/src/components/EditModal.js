@@ -27,8 +27,6 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
     const [hover, setHover] = React.useState(-1);
     const [error, setError] = React.useState('')
 
-    console.log(currentEditData)
-
     function handleEditFormChange(event) {
         const name = event.target.name;
         let value = event.target.value;
@@ -61,7 +59,6 @@ export default function EditModal({ open, handleClose, user, setUser, currentEdi
         })
         .then(r => {
             r.ok ? r.json().then(data => {
-                console.log(data)
                 setUser({...user, employer: {...user.employer, [currentModelEdit]: [...user.employer[currentModelEdit].filter(post => post.id !== currentEditData.id), currentEditData]}})
                 handleClose()
                 setError('')

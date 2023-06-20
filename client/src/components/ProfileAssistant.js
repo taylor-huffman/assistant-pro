@@ -136,7 +136,6 @@ function ProfileAssistant() {
     }
 
     const handleEditInfo = (name, bio, startDate, hourlyRate, category) => {
-        console.log(name, bio, startDate, hourlyRate, category)
         setEditCompanyNameInput(name)
         setEditCompanyBioInput(bio)
         setEditCompanyStartDateInput(startDate)
@@ -170,7 +169,6 @@ function ProfileAssistant() {
                 })
                 .then(r => {
                     r.ok ? r.json().then(assistantTaskData => {
-                        console.log(assistantTaskData)
                         setUser({...user, assistant: {...assistantData, task_category: assistantTaskData.task_category, assistant_task: {...user.assistant.assistant_task, task_category_id: assistantTaskData.task_category_id }}})
                         handleChangeEditStatus()
                         setError('')
@@ -188,9 +186,6 @@ function ProfileAssistant() {
         })
     }
 
-    
-    console.log(user)
-    console.log(signupFormSelect)
 
     return (
         <>
@@ -275,7 +270,7 @@ function ProfileAssistant() {
                                                                     <TableCell align="left">{agreement.task_category.name}</TableCell>
                                                                     <TableCell align="left">{agreement.employer.company_name}</TableCell>
                                                                     <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
-                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="left">{new Date(agreement.created_at).toLocaleDateString('en-US')}</TableCell>
                                                                     <TableCell align="right" sx={{ paddingRight: '0'  }}><Button onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
                                                                     </TableRow>)
                                                         }) : <TableRow>
@@ -310,7 +305,7 @@ function ProfileAssistant() {
                                                                     <TableCell align="left">{agreement.task_category.name}</TableCell>
                                                                     <TableCell align="left">{agreement.employer.company_name}</TableCell>
                                                                     <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
-                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="left">{new Date(agreement.created_at).toLocaleDateString('en-US')}</TableCell>
                                                                     <TableCell align="right" sx={{ paddingRight: '0'  }}><Button onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
                                                                     </TableRow>)
                                                         }) : <TableRow>
@@ -387,7 +382,7 @@ function ProfileAssistant() {
                                                     sx={{ marginRight: 'auto', width: '75%' }}
                                                 />
                                                 : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
-                                                {user.assistant ? user.assistant.company_start_date : "Loading"}
+                                                {user.assistant ? new Date(user.assistant.company_start_date).toLocaleDateString('en-US') : "Loading"}
                                                 </Typography>
                                                 </>}
                                             </Grid>

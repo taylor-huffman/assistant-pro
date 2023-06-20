@@ -26,8 +26,6 @@ const style = {
 
 export default function ChooseAssistantModal({ open, handleClose, user, setUser, currentDisplayData, setCurrentDisplayData, currentDisplayModel, setCurrentDisplayModel, assistant }) {
 
-    console.log(assistant, user)
-
     const history = useHistory()
     const [signupFormData, setSignupFormData] = useState({
         task_agreement_notes: ''

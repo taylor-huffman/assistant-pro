@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid'
 import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Stack } from '@mui/system';
-import { useHistory } from 'react-router-dom';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+// import { Stack } from '@mui/system';
+// import { useHistory } from 'react-router-dom';
+// import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
 const style = {
   position: 'absolute',
@@ -21,9 +21,7 @@ const style = {
   p: 4,
 };
 
-export default function DisplayModal({ open, handleClose, user, setUser, currentDisplayData, setCurrentDisplayData, currentDisplayModel, setCurrentDisplayModel }) {
-
-    console.log(currentDisplayData, currentDisplayModel)
+export default function DisplayModal({ open, handleClose, currentDisplayData, currentDisplayModel }) {
 
     // const history = useHistory()
 
@@ -140,7 +138,7 @@ export default function DisplayModal({ open, handleClose, user, setUser, current
                         //         </Box>
                         //     // <TaskCategoriesSelect key={keyName} currentSelectedCategories={currentDisplayData[keyName]} currentDisplayData={currentDisplayData} setCurrentEditData={setCurrentEditData} currentPostCategories={currentPostCategories} setCurrentPostCategories={setCurrentPostCategories} />
                         // )}
-                        if (typeof currentDisplayData[keyName] === 'object' && keyName === 'employer' || typeof currentDisplayData[keyName] === 'object' && keyName === 'assistant' ) return <Typography key={keyName} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '0' }}>{`${keyName.split('_').join(' ').toUpperCase()}: ${currentDisplayData[keyName].company_name}`}</Typography>
+                        if ((typeof currentDisplayData[keyName] === 'object' && keyName === 'employer') || (typeof currentDisplayData[keyName] === 'object' && keyName === 'assistant') ) return <Typography key={keyName} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '0' }}>{`${keyName.split('_').join(' ').toUpperCase()}: ${currentDisplayData[keyName].company_name}`}</Typography>
                         if (typeof currentDisplayData[keyName] === 'object' && keyName === 'task_post') return <Typography key={keyName} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '2' }}>{`${'Task Description'.toUpperCase()}: ${currentDisplayData[keyName].task_description}`}</Typography>
                         if (typeof currentDisplayData[keyName] === 'object' && currentDisplayData[keyName] && keyName === 'review') return <Typography key={keyName} /*size='small'*/ sx={{ marginBottom: '15px', width: '100%', textTransform: 'capitalize', order: '3' }}>{`${keyName.split('_').join(' ').toUpperCase()}: ${currentDisplayData[keyName].review_text}`}</Typography>
                         if (typeof currentDisplayData[keyName] === 'object') return null

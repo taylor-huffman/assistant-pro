@@ -101,7 +101,6 @@ import ReviewModal from './ReviewModal';
         }
 
         const handleEditInfo = (name, bio, startDate) => {
-            console.log(name, bio, startDate)
             setEditCompanyNameInput(name)
             setEditCompanyBioInput(bio)
             setEditCompanyStartDateInput(startDate)
@@ -141,7 +140,6 @@ import ReviewModal from './ReviewModal';
             .then(r => {
                 if (r.ok) {
                     r.json().then(data => {
-                        console.log(data)
                         setUser({...user, employer: data})
                         handleChangeEditStatus()
                         setError('')
@@ -171,8 +169,6 @@ import ReviewModal from './ReviewModal';
             handleOpenReview()
             setCurrentAgreementData(data)
         }
-
-        console.log(user)
     
         return (
             <>
@@ -356,7 +352,7 @@ import ReviewModal from './ReviewModal';
                                                                     <TableCell align="left">{agreement.task_category.name}</TableCell>
                                                                     <TableCell align="left">{agreement.assistant.company_name}</TableCell>
                                                                     <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
-                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="left">{new Date(agreement.created_at).toLocaleDateString('en-US')}</TableCell>
                                                                     <TableCell align="right" sx={{ paddingRight: '0'  }}><EditOutlinedIcon onClick={() => handleOpenEditModalOnClick(agreement, 'task_agreements')} sx={{ marginLeft: 'auto'}} />
                                                                     <DeleteOutlineOutlinedIcon onClick={() => handleOpenDeleteModal(agreement, 'task_agreements')} /></TableCell>
                                                                     </TableRow>)
@@ -392,7 +388,7 @@ import ReviewModal from './ReviewModal';
                                                                     <TableCell align="left">{agreement.task_category.name}</TableCell>
                                                                     <TableCell align="left">{agreement.assistant.company_name}</TableCell>
                                                                     <TableCell align="left">{`$${agreement.hourly_rate}/hr`}</TableCell>
-                                                                    <TableCell align="left">{agreement.created_at}</TableCell>
+                                                                    <TableCell align="left">{new Date(agreement.created_at).toLocaleDateString('en-US')}</TableCell>
                                                                     <TableCell align="right" sx={{ paddingRight: '0', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'  }}>{agreement.is_completed && !agreement.review ? <Button style={{ fontSize: '14px' }} onClick={() => handleOpenReviewModalOnClick(agreement)} >Review</Button> : null}<Button style={{ fontSize: '14px' }} onClick={() => handleOpenDisplayModalOnClick(agreement, 'Agreement')} >View</Button></TableCell>
                                                                     </TableRow>)
                                                         }) : <TableRow>
@@ -518,7 +514,7 @@ import ReviewModal from './ReviewModal';
                                                     sx={{ marginRight: 'auto', width: '75%' }}
                                                 />
                                                 : <><Typography variant='p' sx={{ marginRight: 'auto', fontFamily: 'Poppins' }}>
-                                                {user.employer ? user.employer.company_start_date : "Loading"}
+                                                {user.employer ? new Date(user.employer.company_start_date).toLocaleDateString('en-US') : "Loading"}
                                                 </Typography>
                                                 </>}
                                             </Grid>

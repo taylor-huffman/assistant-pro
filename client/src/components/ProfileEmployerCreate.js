@@ -26,9 +26,6 @@ function ProfileEmployerCreate() {
         });
     }
 
-    console.log(signupFormData)
-    console.log(user.id)
-
       function handleSignupSubmit(e) {
         e.preventDefault()
         fetch(`/employers`, {
@@ -41,7 +38,6 @@ function ProfileEmployerCreate() {
         .then(r => {
             if (r.ok) {
                 return r.json().then(data => {
-                    console.log(data)
                     setUser({...user, employer: data})
                     history.push('/account/profile-employer')
             })} else {

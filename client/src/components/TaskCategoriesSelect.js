@@ -76,7 +76,6 @@ export default function TaskCategoriesSelect({ currentSelectedCategories, curren
         return array
     }
 
-    console.log(currentCategoriesArray)
     
 
   const handleChange = (event) => {
@@ -89,9 +88,6 @@ export default function TaskCategoriesSelect({ currentSelectedCategories, curren
     );
     setCurrentPostCategories(setEditData(typeof value === 'string' ? value.split(',') : value,))
   };
-//   console.log(currentSelectedCategories)
-  console.log(currentPostCategories)
-    // console.log(currentCategoriesArray)
 
   return (
     <div>
