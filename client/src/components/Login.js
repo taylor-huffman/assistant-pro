@@ -126,10 +126,6 @@ function Login() {
             signupErrors.push("Email is not in a valid format")
         }
 
-        if (!signupFormData.email) {
-            signupErrors.push("Email can't be blank")
-        }
-
         if (!signupFormData.password || (!signupFormData.password && !signupFormData.password_confirmation)) {
             signupErrors.push("Password can't be blank")
         }
