@@ -95,41 +95,131 @@ function Login() {
 
       function handleSignupSubmit(e) {
         e.preventDefault()
-        const formData = new FormData()
-        formData.append('image', profilePicture)
-        formData.append('name', signupFormData.name)
-        formData.append('address', signupFormData.address)
-        formData.append('phone', signupFormData.phone)
-        formData.append('email', signupFormData.email)
-        formData.append('password', signupFormData.password)
-        formData.append('password_confirmation', signupFormData.password_confirmation)
+        
+        const signupErrors = []
 
-        fetch(`/accounts`, {
-            method: 'POST',
-            // headers: {
-            //     'Content-Type': 'multipart/form-data'
-            // },
-            body: formData
-        })
-        .then(r => {
-            r.ok ? r.json().then(data => {
-                setUser(data)
-                setIsAuth(true)
-                history.push('/account')
+        // if (!profilePicture || !signupFormData.name || !signupFormData.address || !signupFormData.phone || !signupFormData.email || !signupFormData.password || !signupFormData.password_confirmation) {
+        //     signupErrors.push("All fields are required")
+        // }
+
+        if (!signupFormData.name) {
+            signupErrors.push("Name can't be blank")
+        }
+
+        if (!signupFormData.address) {
+            signupErrors.push("Address can't be blank")
+        }
+
+        if (!signupFormData.phone) {
+            signupErrors.push("Phone can't be blank")
+        }
+
+        if (!signupFormData.phone.match(/\d{3}-\d{3}-\d{4}/)) {
+            signupErrors.push("Phone must be in XXX-XXX-XXXX format")
+        }
+
+        if (!signupFormData.email) {
+            signupErrors.push("Email can't be blank")
+        }
+        // eslint-disable-next-line
+        if (!signupFormData.email.match(/[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*/)) {
+            signupErrors.push("Email is not in a valid format")
+        }
+
+        if (!signupFormData.email) {
+            signupErrors.push("Email can't be blank")
+        }
+
+        if (!signupFormData.password || (!signupFormData.password && !signupFormData.password_confirmation)) {
+            signupErrors.push("Password can't be blank")
+        }
+
+        if (signupFormData.password && signupFormData.password_confirmation && (signupFormData.password !== signupFormData.password_confirmation)) {
+            signupErrors.push("Password confirmation doesn't match Password")
+        }
+
+        if (!profilePicture) {
+            signupErrors.push("Image must be uploaded")
+        }
+        
+        
+
+        if (signupErrors.length > 0) {
+            setError(signupErrors)
+        } else {
+            const formData = new FormData()
+            formData.append('image', profilePicture)
+            formData.append('name', signupFormData.name)
+            formData.append('address', signupFormData.address)
+            formData.append('phone', signupFormData.phone)
+            formData.append('email', signupFormData.email)
+            formData.append('password', signupFormData.password)
+            formData.append('password_confirmation', signupFormData.password_confirmation)
+
+            fetch(`/accounts`, {
+                method: 'POST',
+                // headers: {
+                //     'Content-Type': 'multipart/form-data'
+                // },
+                body: formData
             })
-            : r.json().then(error => {
-                console.log(error)
-                setError(error.error)
-                setSignupFormData({
-                    name: '',
-                    address: '',
-                    phone: '',
-                    email: '',
-                    password: '',
-                    password_confirmation: ''
+            .then(r => {
+                r.ok ? r.json().then(data => {
+                    setUser(data)
+                    setIsAuth(true)
+                    history.push('/account')
+                })
+                : r.json().then(error => {
+                    console.log(error)
+                    setError(error.error)
+                    // setSignupFormData({
+                    //     name: '',
+                    //     address: '',
+                    //     phone: '',
+                    //     email: '',
+                    //     password: '',
+                    //     password_confirmation: ''
+                    // })
                 })
             })
-        })
+        }
+
+        // const formData = new FormData()
+        // formData.append('image', profilePicture)
+        // formData.append('name', signupFormData.name)
+        // formData.append('address', signupFormData.address)
+        // formData.append('phone', signupFormData.phone)
+        // formData.append('email', signupFormData.email)
+        // formData.append('password', signupFormData.password)
+        // formData.append('password_confirmation', signupFormData.password_confirmation)
+
+        // fetch(`/accounts`, {
+        //     method: 'POST',
+        //     // headers: {
+        //     //     'Content-Type': 'multipart/form-data'
+        //     // },
+        //     body: formData
+        // })
+        // .then(r => {
+        //     r.ok ? r.json().then(data => {
+        //         setUser(data)
+        //         setIsAuth(true)
+        //         history.push('/account')
+        //     })
+        //     : r.json().then(error => {
+        //         console.log(error)
+        //         setError(error.error)
+        //         setSignupFormData({
+        //             name: '',
+        //             address: '',
+        //             phone: '',
+        //             email: '',
+        //             password: '',
+        //             password_confirmation: ''
+        //         })
+        //     })
+        // })
+
       }
 
       function handleLoginSubmit(e) {

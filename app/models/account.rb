@@ -14,4 +14,14 @@ class Account < ApplicationRecord
         message: 'is not in a valid format' }
     # validates :image, presence: { message: 'must be uploaded' }
     # validates :image, attached: true
+    # validate :image_present, on: :create
+
+    # private
+    
+    # def image_present
+    #     # @account.errors.add(:image, 'must be uploaded') unless params[:image] != "undefined"
+    #     if image == "undefined"
+    #         @account.errors.add(:image, 'must be uploaded')
+    #     end
+    # end
 end
